@@ -1,0 +1,16 @@
+#!/bin/sh
+echo '=== MYIR POC7 M.2 read-only diagnostics ==='
+cat /etc/myir-build
+uname -r
+lspci -nn
+lspci -vv
+lsmod | grep -E 'nvme|hwmon'
+nvme list
+cat /proc/partitions
+block info
+for d in /sys/class/nvme/nvme*; do
+    [ -d "$d" ] || continue
+    echo "$d"
+    cat "$d/model" "$d/firmware_rev" "$d/state" 2>/dev/null
+done
+dmesg | grep -iE 'pci|nvme|regulator|link.*(up|down|fail)'

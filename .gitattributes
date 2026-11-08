@@ -1,4 +1,3 @@
 * text=auto eol=lf
 *.bin -text
 *.patch -text
-*.patch -whitespace

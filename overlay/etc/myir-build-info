@@ -1,3 +1,1 @@
-POC6: POC5a RTC/USB baseline + USB1 Type-C fixed Host.
-Type-C CC/VBUS and physical device operation require hardware validation; no unverified VBUS GPIO is driven.
-Wi-Fi disabled on fresh install.
+POC7: POC6 baseline plus PCIe x1 Gen1 and NVMe. Original V2 Yocto pin mapping, modern PHY CPU clock output. SD boot and U-Boot unchanged. Physical PCIe/NVMe validation pending.

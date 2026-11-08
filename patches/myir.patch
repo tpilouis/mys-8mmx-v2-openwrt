@@ -260,20 +260,21 @@ index 95757ef..b933fcf 100644
 +CONFIG_MSDOS_PARTITION=y
 diff --git a/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts b/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts
 new file mode 100644
-index 0000000..ff860c3
+index 0000000..73d8f40
 --- /dev/null
 +++ b/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts
-@@ -0,0 +1,417 @@
+@@ -0,0 +1,448 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/* MYIR MYS-8MMX-V2 POC6: Type-C Host and RX8025T and USB2 Host on the POC4 baseline.
++/* MYIR MYS-8MMX-V2 POC7: Type-C Host and RX8025T and USB2 Host on the POC4 baseline.
 + * Pin assignments follow MYIR V2 BSP and V10 schematic.
 + * RTC and USB require hardware validation for this candidate.
 + */
 +/dts-v1/;
 +#include "imx8mm.dtsi"
++#include <dt-bindings/phy/phy-imx8-pcie.h>
 +
 +/ {
-+    model = "MYIR MYS-8MMX-V2 (OpenWrt POC6 Type-C Host RX8025T)";
++    model = "MYIR MYS-8MMX-V2 (OpenWrt POC7 M.2 NVMe candidate)";
 +    compatible = "myir,mys-8mmx-v2", "fsl,imx8mm";
 +
 +    aliases {
@@ -404,7 +405,7 @@ index 0000000..ff860c3
 +    status = "okay";
 +};
 +
-+/* eMMC, Bluetooth, PCIe and display remain outside this bring-up. */
++/* eMMC, Bluetooth and display remain outside this bring-up. */
 +&usdhc1 {
 +    pinctrl-names = "default";
 +    pinctrl-0 = <&pinctrl_usdhc1>;
@@ -644,7 +645,7 @@ index 0000000..ff860c3
 +&crypto { status = "disabled"; };
 +
 +/* USB2 feeds the fixed-power FE1.1 hub and the two Type-A ports. */
-+/* J2 Type-C uses USB1. POC6 is fixed Host, not dual-role/gadget. */
++/* J2 Type-C uses USB1. POC7 is fixed Host, not dual-role/gadget. */
 +&usbphynop1 {
 +    status = "okay";
 +};
@@ -678,6 +679,36 @@ index 0000000..ff860c3
 +        fsl,pins = <
 +            MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL 0x400001c3
 +            MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA 0x400001c3
++        >;
++    };
++};
++
++/* J13: M-key PCIe x1 NVMe. V10 R950/R951 route CPU refclk to SSD.
++ * Original V2 BSP uses GPIO4_21 PERST and I2C4_SCL CLKREQ.
++ * SD2_WP/GPIO2_20 is PEWAKE on the schematic, not an output disable.
++ */
++&pcie_phy {
++    fsl,refclk-pad-mode = <IMX8_PCIE_REFCLK_PAD_OUTPUT>;
++    status = "okay";
++};
++&pcie0 {
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_myir_pcie>;
++    reset-gpio = <&gpio4 21 GPIO_ACTIVE_LOW>;
++    vpcie-supply = <&reg_wifi_parent>;
++    assigned-clocks = <&clk IMX8MM_CLK_PCIE1_AUX>, <&clk IMX8MM_CLK_PCIE1_CTRL>;
++    assigned-clock-rates = <10000000>, <250000000>;
++    assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_50M>, <&clk IMX8MM_SYS_PLL2_250M>;
++    /* Initial validation deliberately limits link to Gen1 (2.5 GT/s). */
++    fsl,max-link-speed = <1>;
++    status = "okay";
++};
++&iomuxc {
++    pinctrl_myir_pcie: myir-pcie-grp {
++        fsl,pins = <
++            MX8MM_IOMUXC_I2C4_SCL_PCIE1_CLKREQ_B 0x61
++            MX8MM_IOMUXC_SAI2_RXFS_GPIO4_IO21 0x41
++            MX8MM_IOMUXC_GPIO1_IO00_ANAMIX_REF_CLK_32K 0x141
 +        >;
 +    };
 +};

@@ -1,7 +1,7 @@
 {
   "status": "build_candidate_hardware_test_pending",
   "base_release": "25.12.6",
-  "candidate": "POC6 Type-C Host RX8025T",
+  "candidate": "POC7 M.2 NVMe Gen1",
   "bootloader": "2025.04 MYIR POC1a unchanged",
   "source_commit": "71dbef3fd854850a810c93416c16d32d3fc82734",
   "disk_signature": "4d595232",
@@ -20,23 +20,28 @@
     },
     {
       "name": "artifact-check.log",
-      "bytes": 609,
-      "sha256": "eca05adf6dc90ba8fd031a592b9657ade0985bcc92246833c3af8b4c12520abd"
+      "bytes": 687,
+      "sha256": "1895d65f33d6d82d256ff1485b7b032a091fcf22dbc6c2508dd4c12813001d84"
     },
     {
       "name": "boot-openwrt.cmd",
-      "bytes": 595,
-      "sha256": "745e9702ba6c699e39d8bda6678fb3767f4677b3120c8f3c84ffa05c3117f467"
+      "bytes": 597,
+      "sha256": "fe52bd45b6660397ae873cc5c48fcd4e45e5a2d59348d9f3a2e04d09069e4704"
     },
     {
       "name": "boot.scr",
-      "bytes": 667,
-      "sha256": "4700e6b18248f9a5e3e82332f5680fcef9a8284ff08fb04b90116e8c4cde83d4"
+      "bytes": 669,
+      "sha256": "e9a78fa82c666197aba430118a46116cc45a9638ead9949150dba32af23c6192"
     },
     {
       "name": "build-kit.zip",
-      "bytes": 115702,
-      "sha256": "f98175af01cc6c1231a80f2abf9f8036c60d07734c0cbbe397d735d6b7cf3805"
+      "bytes": 132656,
+      "sha256": "e38f3ab49a9b6bd015afef91b4538d542a290094b6badfde1a0bc4399d062621"
+    },
+    {
+      "name": "build.log",
+      "bytes": 2401007,
+      "sha256": "e0996d6547f787c23cc127da4e5de7bb7195131f4c0785eb7e567840f2084d35"
     },
     {
       "name": "feeds-pinned.txt",
@@ -46,17 +51,12 @@
     {
       "name": "final-disk-check.log",
       "bytes": 629,
-      "sha256": "be41eedfa272b1661436fb7c4f442a3c70449b42a9f0d0cbac8bd1cd009d2322"
-    },
-    {
-      "name": "git-fsck.log",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "sha256": "664acd7c06561b59e83f86a35d0b5503efc1ebcdfbe0ce74a7f5bbdfe464fd23"
     },
     {
       "name": "Image",
       "bytes": 14882824,
-      "sha256": "108349d3ae655c75f7d3eb719603dc1fbc5036f0e67b625a0bf62e9e3e89db27"
+      "sha256": "9178f696c80159733f69b8c4b63d7a28eaba3e01cf5a0ab8d9bd0ab9ee3c8053"
     },
     {
       "name": "imx-boot-poc1a",
@@ -65,63 +65,63 @@
     },
     {
       "name": "imx8mm-mys-8mmx-v2.dtb",
-      "bytes": 44758,
-      "sha256": "65da7e8a4464f0e5bec5ce5a92245ce7ac54160b779d8dc3d470ccbf2fd70db9"
+      "bytes": 45163,
+      "sha256": "50d639ad38a572d979e4e23c189df47f4445cdbb5079df04d78c427b84e84927"
     },
     {
       "name": "imx8mm-mys-8mmx-v2.dts",
-      "bytes": 11709,
-      "sha256": "59ecc95379dbe5c4f434739311d9c3c9a424c8d0cdc98a8dd62a6dbe48cbe8c3"
+      "bytes": 12807,
+      "sha256": "edd7a04367174a997342bd34e76a67b71491546084eedf77e02a8f0ea1014a00"
     },
     {
       "name": "kernel-build.config",
-      "bytes": 138251,
-      "sha256": "6b21a2c16731949774649d1eafc50f89ab8b8e6ef538f81ee50b32acea83b255"
+      "bytes": 138389,
+      "sha256": "00fb00746de85dbcf8f7034b4b1e44ac2db121812ec4f885fe084e93f6e7b4ad"
     },
     {
       "name": "myir-diffconfig",
-      "bytes": 3303,
-      "sha256": "b1cf7e7a712f8156a72df37b72ce6f29099af35f179e44ac319c3c9eb84f4213"
+      "bytes": 3539,
+      "sha256": "f62c6d57384c143b4081a44e5c3062ea783dc904847fa85c0610ce7a7ae7df32"
     },
     {
       "name": "myir-openwrt-port.patch",
-      "bytes": 22924,
-      "sha256": "ed79d428015bedeb33520990ade923b96d7307b8f39561a087a24900684fee61"
+      "bytes": 24053,
+      "sha256": "2be94f440417233b4ba8026b38e37cf3bc74e5064ccc6d6a0aae7ae21c413d50"
     },
     {
       "name": "myir-rootfs-overlay.tar.gz",
-      "bytes": 403736,
-      "sha256": "b74b17e77d27b1feb538521b6e8fa822aa16843d7bfc5f6f83c9d734e0123ef6"
+      "bytes": 403994,
+      "sha256": "cb626f1a0f613e654af2750c12ca769e59803331acc4a77443af0f70492a31e7"
     },
     {
       "name": "openwrt-25.12.6-imx-cortexa53-myir_mys-8mmx-v2-initramfs-kernel.bin",
-      "bytes": 31987720,
-      "sha256": "b102ea32ee6f959b1c0c5fe42de82da181b5fb2c43946f300aa0c82e9ca2707b"
+      "bytes": 35395592,
+      "sha256": "418b545deeed75f90241ccee18c569a345b939408b439dd7ddaa1f25d9cd0056"
     },
     {
       "name": "openwrt-25.12.6-imx-cortexa53-myir_mys-8mmx-v2.manifest",
-      "bytes": 4940,
-      "sha256": "a2e97b1d3bf844a845a69ac022efa8266d4581ed7e890c109394334167b7b184"
+      "bytes": 5123,
+      "sha256": "6177333613a7800e20fa1b2670289178fbe338dd1c8f1810800770822789eef3"
     },
     {
-      "name": "openwrt-25.12.6-mys-8mmx-v2-sd-typec-host-poc6.img",
+      "name": "openwrt-25.12.6-mys-8mmx-v2-sd-nvme-poc7.img",
       "bytes": 612368384,
-      "sha256": "41fb97c2a8cb9223a9d137e28ef0e1bfdbb6b8570e148576bc7a86bf784515b0"
+      "sha256": "0057a97424f96c328eec120502624b32cba1335036c45ccece056351a9a2032c"
     },
     {
-      "name": "openwrt-25.12.6-mys-8mmx-v2-sd-typec-host-poc6.img.gz",
-      "bytes": 14352102,
-      "sha256": "6cb84faf9f8d9ec2d7d6bcc533c4fab7f541efb429f1c75b8a8f4e754836e414"
+      "name": "openwrt-25.12.6-mys-8mmx-v2-sd-nvme-poc7.img.gz",
+      "bytes": 15472218,
+      "sha256": "77d6bc7397f62437ec809e1b83a292cbc02ae858956c6834bb87d6f6a9816634"
     },
     {
       "name": "openwrt-build.config",
-      "bytes": 281965,
-      "sha256": "524253d815e4624ababedea4dea1ebad32867ec010291565b159b0513dc794fc"
+      "bytes": 281866,
+      "sha256": "3915ed9b8ac77d4d6ab783b73a82790f38dfae9372990e59e3461f8400673a58"
     },
     {
       "name": "package-changes.json",
-      "bytes": 3,
-      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+      "bytes": 922,
+      "sha256": "ca166edd022d839252d091d80872fbfbb47974244c101a43be1cb2904bff8130"
     },
     {
       "name": "phy-optional-vbus-test.log",
@@ -129,14 +129,9 @@
       "sha256": "0e9a2ca997dbb7f3864519a5dc809639d80fa90888b7795d4a6d4d5cf48256fc"
     },
     {
-      "name": "README-POC6.txt",
-      "bytes": 1730,
-      "sha256": "c869656afb77abb9cffb3e95c60120846ef1ee978d339de87586c47f0b8dac18"
-    },
-    {
-      "name": "regenerate.log",
-      "bytes": 1239275,
-      "sha256": "c003b0cebe5cdc46161920f0412e8e267c228fa279cf748d2580d5cf2a9956ee"
+      "name": "README-POC7.txt",
+      "bytes": 2005,
+      "sha256": "e3b98c16c018346b4ab85b60423f87e2205bbf9b77f73c89d3b5f5d4f276e024"
     },
     {
       "name": "rtc-protocol-test.log",
@@ -150,18 +145,69 @@
     },
     {
       "name": "source-provenance.json",
-      "bytes": 1239,
-      "sha256": "e466f6ce2793fcb94c783649ef504c334242cae73d95902db655a444cf31acaf"
+      "bytes": 1617,
+      "sha256": "5a154d4d73138aa99070292294ce955fa78d2723c50f1dd8f0c0c5a680a1c627"
     },
     {
       "name": "userspace-smoke.json",
-      "bytes": 2066,
-      "sha256": "45a327d3b86cd4ade0a06efb75e35a61480d112bf71a90ba472a24764930f0a0"
+      "bytes": 2300,
+      "sha256": "9c7d311f1260fcf38eb69218e247a3c721521cd902f832de597319f6068150d1"
     }
   ],
   "offline_checks": "passed: DTB, RX8025T module/autoload, USB Host and storage configuration, filesystem consistency, ARM64 SSH/rpcd/LuCI HTTP/HTTPS and tools",
-  "date": "2026-11-07",
-  "package_changes": [],
-  "regenerated_after_storage_failure": true,
-  "final_image_verification": "PASS: extracted FAT/ext4, 890 regular files, full partition comparison, gzip roundtrip"
+  "date": "2026-11-08",
+  "package_changes": [
+    {
+      "package": "kernel",
+      "previous": "6.12.113~9a2039be28ffbeea7374083bd528894f-r1",
+      "current": "6.12.113~21422cd7b64b4732857f5ed2a8c02dea-r1"
+    },
+    {
+      "package": "kmod-hwmon-core",
+      "previous": null,
+      "current": "6.12.113-r1"
+    },
+    {
+      "package": "kmod-nvme",
+      "previous": null,
+      "current": "6.12.113-r1"
+    },
+    {
+      "package": "libkmod",
+      "previous": null,
+      "current": "32-r1"
+    },
+    {
+      "package": "libnvme",
+      "previous": null,
+      "current": "1.15-r1"
+    },
+    {
+      "package": "libpci",
+      "previous": null,
+      "current": "3.14.0-r2"
+    },
+    {
+      "package": "liburing",
+      "previous": null,
+      "current": "2.7-r1"
+    },
+    {
+      "package": "nvme-cli",
+      "previous": null,
+      "current": "2.15-r1"
+    },
+    {
+      "package": "pciids",
+      "previous": null,
+      "current": "0.407-r1"
+    },
+    {
+      "package": "pciutils",
+      "previous": null,
+      "current": "3.14.0-r2"
+    }
+  ],
+  "final_image_verification": "PASS: extracted FAT/ext4, 913 regular files match tested archive, partition readback and gzip roundtrip",
+  "m2_offline_checks": "PASS: PCIe x1 Gen1, refclock output, reset/power DT, NVMe autoload, lspci/nvme runtime"
 }
