@@ -1,0 +1,24 @@
+#!/bin/sh
+echo '=== MYIR POC6 RTC and USB diagnostics (read-only) ==='
+cat /etc/myir-build
+uname -r
+echo '=== UTC system time ==='
+date -u
+echo '=== RTC devices ==='
+ls -l /dev/rtc* /sys/class/rtc 2>/dev/null
+for rtc in /sys/class/rtc/rtc*; do
+    [ -d "$rtc" ] || continue
+    echo "$rtc"
+    cat "$rtc/name" "$rtc/date" "$rtc/time" 2>/dev/null
+done
+[ ! -c /dev/rtc0 ] || hwclock -r -u -f /dev/rtc0
+echo '=== USB devices and topology ==='
+lsusb
+lsusb -t
+echo '=== Block devices ==='
+cat /proc/partitions
+block info
+echo '=== Mounts ==='
+mount
+echo '=== RTC, I2C and USB kernel messages ==='
+dmesg | grep -iE 'rtc|rx8025|30a30000|usb|ci_hdrc|ehci|scsi|sd[a-z]'

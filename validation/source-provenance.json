@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-07",
+  "candidate": "POC6 Type-C fixed Host regenerated",
+  "upstream_commit": "71dbef3fd854850a810c93416c16d32d3fc82734",
+  "baseline": "POC5a RX8025T/USB baseline; same pinned feeds",
+  "custom_patch": "myir-openwrt-port.patch",
+  "vendor_reference": "MYiR-Dev/myir-imx-linux develop d1275dfcc8d52e51b720d42d95ee54853449970b arch/arm64/boot/dts/myir/mys-imx8mm-evk-v20.dts",
+  "rtc": "I2C2 0x32 RX8025T, rtc0, boot-autoload module, UTC sysfixtime",
+  "usb": "USB1 J2 Type-C fixed Host plus USB2 FE1.1 Type-A Host",
+  "filesystems": [
+    "FAT32",
+    "exFAT",
+    "ext4"
+  ],
+  "anonymous_automount": false,
+  "usb_typec_enabled": true,
+  "usb_typec_mode": "fixed Host; CC/power hardware configuration unchanged; no unknown GPIO enabled",
+  "bootloader": "U-Boot 2025.04 MYIR POC1a reused unchanged",
+  "ddr_regenerated": false,
+  "hardware_test": false,
+  "rtc_driver_sha256": "28f8e5b513e543b9a149fbe3cc6d17f085348c50c12e06518fcb68b09ecce1c2",
+  "rtc_protocol_tests": "actual driver core with simulated I2C; passed; no physical hardware emulated",
+  "usb_typec_power_evidence": "User reports LED lit on existing adapter/drive; enumeration pending",
+  "typec_cc_registers_written": false
+}

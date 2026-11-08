@@ -1,0 +1,4 @@
+FROM myir/openwrt-build:noble
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends proot openssh-client sshpass
+USER builder

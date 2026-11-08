@@ -1,0 +1,51 @@
+# MYIR MYS-8MMX-V2 OpenWrt
+
+Private board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB V10, i.MX8MM Quad / 2 GiB DDR4. This repository is a pinned OpenWrt port kit, not a fork containing the full upstream history. It preserves the local POC6 baseline and subsequent POC7 changes in separate commits/tags.
+
+## Current snapshot: POC6
+
+OpenWrt maintenance commit `71dbef3fd854850a810c93416c16d32d3fc82734`, Linux 6.12.113; feeds are pinned in `configs/feeds.conf`. The OpenWrt label remains 25.12.6 with local maintenance changes; this is not an official supported device image.
+
+- SD boot uses the separately built U-Boot 2025.04 MYIR POC1a blob and original vendor DDR timing.
+- Wired LAN DHCP client, SSH/LuCI, AP6256 Wi-Fi, RX8025T RTC, USB-A and fixed-Host USB Type-C.
+- POC6 Type-C read-only FAT mount and complete 35,373,568-byte Image read passed on board; SHA256 `7880ec0586b87ae7fc391373594a2cd871334154aad9b4c62e57dec79cf6c38f`; unmount passed.
+- RTC battery retention, NOR boot and USB write/endurance tests remain deferred.
+
+## Contents
+
+`patches/myir.patch` applies to the pinned OpenWrt commit. `overlay/` contains runtime files, `configs/` build/feeds pins, `tools/` original build and verification scripts plus a portable source-preparation script, and `validation/` historical local artifact reports. Reports describe the original local builds; they are not evidence that a build made from this export has passed those tests. Image checksums in the reports reference artifacts intentionally excluded from Git.
+
+## Build on Linux / WSL2
+
+Requirements: Git, Python 3, Docker, internet access and sufficient Linux build space. Do not build native OpenWrt in a Windows shell. Prefer a WSL ext4 work directory.
+
+```sh
+python3 tools/prepare.py
+# For a different Linux build path: python3 tools/prepare.py --work /home/USER/work/myir-openwrt
+# Adjust subsequent work path accordingly.
+docker build -t myir/openwrt-build:noble -f tools/Dockerfile .
+docker run --rm -v "$PWD/.work/openwrt:/work" -v "$PWD/tools:/setup:ro" -w /work myir/openwrt-build:noble bash -lc './scripts/feeds update -a && bash /setup/build-poc6.sh'
+```
+
+The builder runs as uid/gid 1000. Ensure your build directory is writable by that uid. The preparation script downloads the pinned vendor firmware and calibration files and verifies their SHA256; no firmware payload is stored in this repository. Consult the vendor firmware licensing before redistribution.
+
+The exported first-boot script deliberately excludes the deployed root password/hash. A rebuilt image uses upstream initial password behavior: set a new root password through a trusted local console before network use. Existing board images/passwords are not changed by this export. Wi-Fi starts disabled; no personal SSID/key is included.
+
+## Compose SD image
+
+Provide the separately held `imx-boot-mys8mmx-v2-2025.04-poc1a.bin` in a private bootloader directory. Expected SHA256: `42c8e8c4b256fdc819b5b20c88569e40b69f8db72ff5c6bf92e4c31790e524c0`. This repository does not contain U-Boot/DDR training binaries or build their sources.
+
+```sh
+mkdir -p output
+# Set BOOTLOADER_DIR to an absolute directory containing the file above.
+docker run --rm -v "$PWD/.work/openwrt:/work:ro" -v "$PWD/tools:/setup:ro" -v "$PWD/output:/output" -v "$BOOTLOADER_DIR:/bootloader:ro" myir/openwrt-build:noble python3 /setup/compose-poc6.py
+docker run --rm -v "$PWD/tools:/setup:ro" -v "$PWD/output:/output:ro" myir/openwrt-build:noble python3 /setup/verify-poc6.py
+```
+
+The compose script checks the boot blob hash, repairs bitmap padding on the exported rootfs copy, requires a clean EXT4 check, checks FAT and gzip roundtrip, and builds the complete SD image. Never flash an unverified output. Back up card contents and enable writer readback verification.
+
+Some original diagnostic/unit/emulation scripts in `tools/` retain local `/home/myir` or `/mnt/d` paths and a private initial-access fixture. They are preserved as engineering references, not portable CI. Do not upload that fixture. No firmware image or secret is included in Git.
+
+## Provenance and licensing
+
+OpenWrt sources remain at https://github.com/openwrt/openwrt . Vendor board references are MYiR-Dev/myir-imx-linux commit `d1275dfcc8d52e51b720d42d95ee54853449970b` and the firmware commit recorded in the overlay JSON. Existing upstream/vendor notices and per-file licenses apply; this project does not grant a new license to vendor PDFs, firmware, DDR blobs or other third-party material. No board manuals or schematic PDFs are redistributed here.

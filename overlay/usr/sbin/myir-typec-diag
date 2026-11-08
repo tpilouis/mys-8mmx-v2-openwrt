@@ -1,0 +1,35 @@
+#!/bin/sh
+echo '=== MYIR POC6 Type-C Host diagnostics (read-only) ==='
+cat /etc/myir-build
+uname -r
+echo '=== USB controller device tree ==='
+for node in /sys/firmware/devicetree/base/soc@0/bus@32c00000/usb@32e40000 /sys/firmware/devicetree/base/soc@0/bus@32c00000/usb@32e50000; do
+    [ -d "$node" ] || continue
+    echo "$node"
+    for prop in status dr_mode; do
+        printf '%s: ' "$prop"
+        tr -d '\000' < "$node/$prop" 2>/dev/null
+        echo
+    done
+done
+echo '=== USB root bus to controller mapping ==='
+for bus in /sys/bus/usb/devices/usb*; do
+    [ -d "$bus" ] || continue
+    readlink -f "$bus"
+    cat "$bus/busnum" "$bus/product" 2>/dev/null
+done
+echo '=== USB topology ==='
+lsusb
+lsusb -t
+echo '=== USB storage ==='
+cat /proc/partitions
+block info
+echo '=== RTC driver ==='
+cat /sys/class/rtc/rtc0/name 2>/dev/null
+echo '=== USB/PHY messages ==='
+dmesg | grep -iE '32e40000|32e50000|usb|ci_hdrc|ehci|scsi|sd[a-z]'
+echo '=== PTN5150 reference reads (I2C2 bus1, address 0x3d; no forced access) ==='
+for reg in 0x01 0x02 0x04; do
+    printf 'register %s: ' "$reg"
+    i2cget -y 1 0x3d "$reg" b 2>&1 || true
+done

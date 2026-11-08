@@ -1,0 +1,29 @@
+#!/bin/sh
+uci -q delete dropbear.@dropbear[0].Interface
+uci set dhcp.lan.ignore='1'
+uci set dhcp.wwan=dhcp
+uci set dhcp.wwan.interface='wwan'
+uci set dhcp.wwan.ignore='1'
+for zone in $(uci show firewall | sed -n 's/^firewall\.\([^=]*\)=zone$/\1/p'); do
+    [ "$(uci -q get firewall.$zone.name)" = lan ] || continue
+    uci -q del_list firewall.$zone.network='wwan'
+    uci add_list firewall.$zone.network='wwan'
+done
+. /lib/functions.sh
+/sbin/wifi config
+wifi_device() {
+    uci set wireless.$1.country='TW'
+    uci set wireless.$1.disabled='1'
+}
+wifi_iface() {
+    [ "$(uci -q get wireless.$1.mode)" = ap ] && uci -q delete wireless.$1
+    return 0
+}
+config_load wireless
+config_foreach wifi_device wifi-device
+config_foreach wifi_iface wifi-iface
+uci commit wireless
+uci commit firewall
+uci commit dropbear
+uci commit dhcp
+exit 0

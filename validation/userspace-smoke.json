@@ -1,0 +1,32 @@
+{
+  "hardware_test": false,
+  "method": "ARM64 user-mode emulation; does not test kernel, PHY or SD hardware",
+  "arm64_busybox": "aarch64",
+  "wifi_uci_defaults": "passed using synthetic UCI fixture; no radio hardware tested",
+  "wifi_firmware_and_modules": "vendor SHA256, brcmfmac module and LuCI wireless view present",
+  "iw_version": "iw version 6.17",
+  "wpa_supplicant_version": "wpa_supplicant v2.12-devel\nCopyright (c) 2003-2024, Jouni Malinen <j@w1.fi> and contributors",
+  "uci_initialization": "passed",
+  "dropbear_version": "Dropbear v2025.89",
+  "candidate": "OpenWrt 25.12.6 MYIR MYS-8MMX-V2 POC6 Type-C Host candidate, 2026-11-07",
+  "poc2_shell_syntax": "passed",
+  "ethtool_version": "ethtool version 6.15",
+  "poc2_diagnostic_tools": "present",
+  "theme_preflight": "access=true stat={ \"dev\": { \"major\": 0, \"minor\": 83 }, \"perm\": { \"setuid\": false, \"setgid\": false, \"sticky\": false, \"user_read\": true, \"user_write\": true, \"user_exec\": false, \"group_read\": true, \"group_write\": false, \"group_exec\": false, \"other_read\": true, \"other_write\": false, \"other_exec\": false }, \"inode\": 4057550, \"mode\": 420, \"nlink\": 1, \"uid\": 0, \"gid\": 0, \"size\": 3705, \"blksize\": 4096, \"blocks\": 8, \"atime\": 1793988524, \"mtime\": 1793988524, \"ctime\": 1794060479, \"type\": \"file\" }\ntemplate_compile_ok\n",
+  "ssh_password_login": "passed under ARM64 userspace emulation",
+  "luci_rpc_password_auth": "passed with real rpcd",
+  "http_/": {
+    "status": 200,
+    "bytes": 664
+  },
+  "luci_login_page": "passed; expected unauthenticated HTTP 403",
+  "http_/cgi-bin/luci/": {
+    "status": 403,
+    "bytes": 2806
+  },
+  "https_luci_login_page": "passed with test-only self-signed certificate",
+  "status": "passed",
+  "usbutils_version": "lsusb (usbutils) 019",
+  "rtc_usb_tools": "passed: RTC module, lsusb, block, shell syntax, anonymous automount disabled; no peripheral hardware emulated",
+  "typec_host_userspace": "passed: Type-C diagnostic shell syntax; physical USB1 Host/CC/VBUS require hardware tests"
+}

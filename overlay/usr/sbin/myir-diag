@@ -1,0 +1,17 @@
+#!/bin/sh
+echo '=== MYIR POC6 diagnostics (read-only) ==='
+date; uptime; uname -a
+ubus call system board
+ip addr show
+ethtool eth0
+myir-mdio-read eth0
+echo '=== interrupts ==='
+cat /proc/interrupts
+echo '=== GPIO ==='
+cat /sys/kernel/debug/gpio 2>/dev/null
+echo '=== I2C adapters (no bus scan) ==='
+i2cdetect -l
+echo '=== recent system log ==='
+logread | tail -100
+echo '=== kernel log ==='
+dmesg

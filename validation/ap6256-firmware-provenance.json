@@ -1,0 +1,19 @@
+{
+  "source": "https://github.com/MYiR-Dev/myir-firmware",
+  "commit": "6406ae805c805230528bd121ee8e7419face4810",
+  "files": [
+    {
+      "vendor_path": "brcm/AP6256/fw_bcm43456c5_ag.bin",
+      "installed_name": "brcmfmac43456-sdio.bin",
+      "bytes": 612864,
+      "sha256": "245808d1310dcff0f3955675a4107b79ccdd0b2f62f681b976429a9870bdcaed"
+    },
+    {
+      "vendor_path": "brcm/AP6256/nvram_ap6256.txt",
+      "installed_name": "brcmfmac43456-sdio.txt",
+      "bytes": 2874,
+      "sha256": "f9667bbd8a708bbc5c1c2368e84f105b6c329da6e133bcaa54956429074cec7b"
+    }
+  ],
+  "note": "Private board development reuse of the vendor BSP firmware; not a new public redistribution license grant. No separate clm_blob exists in this vendor set; hardware channel availability requires validation."
+}

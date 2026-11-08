@@ -1,0 +1,3 @@
+POC6: POC5a RTC/USB baseline + USB1 Type-C fixed Host.
+Type-C CC/VBUS and physical device operation require hardware validation; no unverified VBUS GPIO is driven.
+Wi-Fi disabled on fresh install.

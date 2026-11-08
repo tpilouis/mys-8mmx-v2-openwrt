@@ -1,0 +1,741 @@
+diff --git a/package/kernel/myir-rtc-rx8025t/Makefile b/package/kernel/myir-rtc-rx8025t/Makefile
+new file mode 100644
+index 0000000..c641029
+--- /dev/null
++++ b/package/kernel/myir-rtc-rx8025t/Makefile
+@@ -0,0 +1,21 @@
++include $(TOPDIR)/rules.mk
++include $(INCLUDE_DIR)/kernel.mk
++PKG_NAME:=myir-rtc-rx8025t
++PKG_RELEASE:=1
++PKG_LICENSE:=GPL-2.0-only
++include $(INCLUDE_DIR)/package.mk
++
++define KernelPackage/rtc-rx8025t
++  SUBMENU:=Other modules
++  TITLE:=MYIR Epson RX-8025T RTC (direct register protocol)
++  DEPENDS:=+kmod-i2c-core
++  KCONFIG:=CONFIG_RTC_CLASS=y
++  FILES:=$(PKG_BUILD_DIR)/rtc-rx8025t.ko
++  AUTOLOAD:=$(call AutoLoad,50,rtc-rx8025t,1)
++endef
++
++define Build/Compile
++	$(KERNEL_MAKE) M="$(PKG_BUILD_DIR)" modules
++endef
++
++$(eval $(call KernelPackage,rtc-rx8025t))
+diff --git a/package/kernel/myir-rtc-rx8025t/src/Makefile b/package/kernel/myir-rtc-rx8025t/src/Makefile
+new file mode 100644
+index 0000000..97f4836
+--- /dev/null
++++ b/package/kernel/myir-rtc-rx8025t/src/Makefile
+@@ -0,0 +1 @@
++obj-m += rtc-rx8025t.o
+diff --git a/package/kernel/myir-rtc-rx8025t/src/rtc-rx8025t.c b/package/kernel/myir-rtc-rx8025t/src/rtc-rx8025t.c
+new file mode 100644
+index 0000000..06eb93c
+--- /dev/null
++++ b/package/kernel/myir-rtc-rx8025t/src/rtc-rx8025t.c
+@@ -0,0 +1,193 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Epson RX-8025T basic RTC support for MYIR MYS-8MMX-V2.
++ * Register protocol based on MYIR rtc-rx8025t.c (Kevin Su), itself derived
++ * from the RX8025 driver by Wolfgang Grandegger / Digi International.
++ * Linux 6.12 adaptation: managed RTC allocation, validity handling,
++ * one-hot weekday encoding and explicit reset during time writes.
++ * RX-8025T uses direct register addresses, unlike RX-8025 SA/NB.
++ */
++#include <linux/bcd.h>
++#include <linux/bitops.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/rtc.h>
++
++#define RX8025T_SEC 0x00
++#define RX8025T_EXT 0x0d
++#define RX8025T_FLAG 0x0e
++#define RX8025T_CTRL 0x0f
++#define RX8025T_VDET BIT(0)
++#define RX8025T_VLF BIT(1)
++#define RX8025T_RESET BIT(0)
++#define RX8025T_CSEL GENMASK(7, 6)
++#define RX8025T_CSEL_2S BIT(6)
++
++static int rx8025t_read_reg(struct i2c_client *client, u8 reg)
++{
++	return i2c_smbus_read_byte_data(client, reg);
++}
++
++static int rx8025t_read_time(struct device *dev, struct rtc_time *tm)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++	u8 data[7], weekday;
++	int flags, ctrl, ret, i;
++
++	flags = rx8025t_read_reg(client, RX8025T_FLAG);
++	if (flags < 0)
++		return flags;
++	ctrl = rx8025t_read_reg(client, RX8025T_CTRL);
++	if (ctrl < 0)
++		return ctrl;
++	if ((flags & (RX8025T_VLF | RX8025T_VDET)) || (ctrl & RX8025T_RESET))
++		return -EINVAL;
++
++	ret = i2c_smbus_read_i2c_block_data(client, RX8025T_SEC, sizeof(data), data);
++	if (ret != (int)sizeof(data))
++		return ret < 0 ? ret : -EIO;
++
++	data[0] &= 0x7f;
++	data[1] &= 0x7f;
++	data[2] &= 0x3f;
++	data[4] &= 0x3f;
++	data[5] &= 0x1f;
++	for (i = 0; i < (int)ARRAY_SIZE(data); i++) {
++		if (i == 3)
++			continue;
++		if ((data[i] & 0xf) > 9 || (data[i] >> 4) > 9)
++			return -EINVAL;
++	}
++	weekday = data[3] & 0x7f;
++	if (!weekday || (weekday & (weekday - 1)))
++		return -EINVAL;
++
++	tm->tm_sec = bcd2bin(data[0]);
++	tm->tm_min = bcd2bin(data[1]);
++	tm->tm_hour = bcd2bin(data[2]);
++	tm->tm_wday = __ffs(weekday);
++	tm->tm_mday = bcd2bin(data[4]);
++	tm->tm_mon = bcd2bin(data[5]) - 1;
++	tm->tm_year = bcd2bin(data[6]) + 100;
++	return rtc_valid_tm(tm);
++}
++
++static int rx8025t_set_time(struct device *dev, struct rtc_time *tm)
++{
++	struct i2c_client *client = to_i2c_client(dev);
++	u8 data[7];
++	int ctrl, flags, ret;
++
++	ret = rtc_valid_tm(tm);
++	if (ret)
++		return ret;
++	if (tm->tm_year < 100 || tm->tm_year > 199 || tm->tm_wday < 0 || tm->tm_wday > 6)
++		return -EINVAL;
++
++	ctrl = rx8025t_read_reg(client, RX8025T_CTRL);
++	if (ctrl < 0)
++		return ctrl;
++	ctrl &= RX8025T_CSEL; /* No IRQ line is connected on this board. */
++	ret = i2c_smbus_write_byte_data(client, RX8025T_CTRL, ctrl | RX8025T_RESET);
++	if (ret < 0)
++		return ret;
++
++	data[0] = bin2bcd(tm->tm_sec);
++	data[1] = bin2bcd(tm->tm_min);
++	data[2] = bin2bcd(tm->tm_hour);
++	data[3] = BIT(tm->tm_wday); /* Binary one-hot; never BCD-convert. */
++	data[4] = bin2bcd(tm->tm_mday);
++	data[5] = bin2bcd(tm->tm_mon + 1);
++	data[6] = bin2bcd(tm->tm_year - 100);
++	ret = i2c_smbus_write_i2c_block_data(client, RX8025T_SEC, sizeof(data), data);
++	if (ret < 0)
++		return ret; /* Keep RESET asserted after a partial write. */
++
++	ret = i2c_smbus_write_byte_data(client, RX8025T_CTRL, ctrl);
++	if (ret < 0)
++		return ret;
++	flags = rx8025t_read_reg(client, RX8025T_FLAG);
++	if (flags < 0)
++		return flags;
++	return i2c_smbus_write_byte_data(client, RX8025T_FLAG,
++				       flags & ~(RX8025T_VLF | RX8025T_VDET));
++}
++
++static int rx8025t_init_client(struct i2c_client *client)
++{
++	int flags, ctrl, ret;
++
++	flags = rx8025t_read_reg(client, RX8025T_FLAG);
++	if (flags < 0)
++		return flags;
++	ctrl = rx8025t_read_reg(client, RX8025T_CTRL);
++	if (ctrl < 0)
++		return ctrl;
++
++	/* Disable test/timer/interrupt modes, keeping a valid retained clock. */
++	ret = i2c_smbus_write_byte_data(client, RX8025T_EXT, 0);
++	if (ret < 0)
++		return ret;
++	ctrl = (flags & RX8025T_VLF) ? RX8025T_CSEL_2S : (ctrl & (RX8025T_CSEL | RX8025T_RESET));
++	ret = i2c_smbus_write_byte_data(client, RX8025T_CTRL, ctrl);
++	if (ret < 0)
++		return ret;
++	/* Preserve voltage-invalid flags until a complete time write succeeds. */
++	return i2c_smbus_write_byte_data(client, RX8025T_FLAG,
++				       flags & (RX8025T_VLF | RX8025T_VDET));
++}
++
++static const struct rtc_class_ops rx8025t_ops = {
++	.read_time = rx8025t_read_time,
++	.set_time = rx8025t_set_time,
++};
++
++static int rx8025t_probe(struct i2c_client *client)
++{
++	struct rtc_device *rtc;
++	int ret, flags;
++
++	if (!i2c_check_functionality(client->adapter,
++		I2C_FUNC_SMBUS_BYTE_DATA | I2C_FUNC_SMBUS_I2C_BLOCK))
++		return -EOPNOTSUPP;
++	ret = rx8025t_init_client(client);
++	if (ret)
++		return dev_err_probe(&client->dev, ret, "RTC initialization failed\n");
++	flags = rx8025t_read_reg(client, RX8025T_FLAG);
++	if (flags < 0)
++		return flags;
++	if (flags & (RX8025T_VLF | RX8025T_VDET))
++		dev_warn(&client->dev, "RTC time invalid; set correct UTC time with hwclock\n");
++
++	rtc = devm_rtc_allocate_device(&client->dev);
++	if (IS_ERR(rtc))
++		return PTR_ERR(rtc);
++	rtc->ops = &rx8025t_ops;
++	rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
++	rtc->range_max = RTC_TIMESTAMP_END_2099;
++	clear_bit(RTC_FEATURE_ALARM, rtc->features);
++	return devm_rtc_register_device(rtc);
++}
++
++static const struct of_device_id rx8025t_of_match[] = {
++	{ .compatible = "epson,rx8025t" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, rx8025t_of_match);
++static const struct i2c_device_id rx8025t_id[] = {
++	{ "rx8025t", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, rx8025t_id);
++static struct i2c_driver rx8025t_driver = {
++	.driver = {
++		.name = "rtc-rx8025t",
++		.of_match_table = rx8025t_of_match,
++	},
++	.probe = rx8025t_probe,
++	.id_table = rx8025t_id,
++};
++module_i2c_driver(rx8025t_driver);
++MODULE_DESCRIPTION("MYIR RX-8025T RTC driver, direct register addressing");
++MODULE_AUTHOR("MYIR Electronics; Linux 6.12 adaptation");
++MODULE_LICENSE("GPL");
+\ No newline at end of file
+diff --git a/target/linux/imx/cortexa53/base-files/etc/board.d/02_network b/target/linux/imx/cortexa53/base-files/etc/board.d/02_network
+index f168261..03546c6 100644
+--- a/target/linux/imx/cortexa53/base-files/etc/board.d/02_network
++++ b/target/linux/imx/cortexa53/base-files/etc/board.d/02_network
+@@ -5,6 +5,9 @@ board=$(board_name)
+ board_config_update
+ 
+ case "$board" in
++myir,mys-8mmx-v2)
++	ucidef_set_interface_lan "eth0"
++	;;
+ gw,imx8mm-gw71xx-0x|\
+ gateworks,imx8mp-gw71xx-2x|\
+ gateworks,imx8mm-gw75xx-0x|\
+diff --git a/target/linux/imx/cortexa53/config-default b/target/linux/imx/cortexa53/config-default
+index 95757ef..b933fcf 100644
+--- a/target/linux/imx/cortexa53/config-default
++++ b/target/linux/imx/cortexa53/config-default
+@@ -180,3 +180,7 @@ CONFIG_VT=y
+ CONFIG_VT_CONSOLE=y
+ CONFIG_VT_HW_CONSOLE_BINDING=y
+ CONFIG_ZONE_DMA32=y
++
++# MYIR initial SD/wired port
++CONFIG_MOTORCOMM_PHY=y
++CONFIG_MSDOS_PARTITION=y
+diff --git a/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts b/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts
+new file mode 100644
+index 0000000..ff860c3
+--- /dev/null
++++ b/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts
+@@ -0,0 +1,417 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/* MYIR MYS-8MMX-V2 POC6: Type-C Host and RX8025T and USB2 Host on the POC4 baseline.
++ * Pin assignments follow MYIR V2 BSP and V10 schematic.
++ * RTC and USB require hardware validation for this candidate.
++ */
++/dts-v1/;
++#include "imx8mm.dtsi"
++
++/ {
++    model = "MYIR MYS-8MMX-V2 (OpenWrt POC6 Type-C Host RX8025T)";
++    compatible = "myir,mys-8mmx-v2", "fsl,imx8mm";
++
++    aliases {
++        rtc0 = &rtc_external;
++        ethernet0 = &fec1;
++        led-boot = &cpu_led;
++        led-running = &cpu_led;
++        led-failsafe = &user_led;
++        led-upgrade = &user_led;
++    };
++    chosen { stdout-path = &uart2; };
++    memory@40000000 {
++        device_type = "memory";
++        reg = <0 0x40000000 0 0x80000000>;
++    };
++    /* Type-A VBUS is wired to the board 5V rail through F3/F4 fuses. */
++    reg_usb_host_vbus: regulator-usb-host-vbus {
++        compatible = "regulator-fixed";
++        regulator-name = "usb-host-vbus-5v";
++        regulator-min-microvolt = <5000000>;
++        regulator-max-microvolt = <5000000>;
++        regulator-always-on;
++        regulator-boot-on;
++    };
++    reg_sd_vmmc: regulator-sd-vmmc {
++        compatible = "regulator-fixed";
++        regulator-name = "sd-vmmc-3v3";
++        regulator-min-microvolt = <3300000>;
++        regulator-max-microvolt = <3300000>;
++        regulator-always-on;
++        regulator-boot-on;
++    };
++    /* Q6 + Q5 form an active-high 3.3V Wi-Fi/BT supply switch. */
++    reg_wifi_parent: regulator-wifi-parent {
++        compatible = "regulator-fixed";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_wifi_parent>;
++        regulator-name = "shared-m2-wifi-3v3";
++        regulator-min-microvolt = <3300000>;
++        regulator-max-microvolt = <3300000>;
++        gpio = <&gpio2 11 GPIO_ACTIVE_HIGH>;
++        enable-active-high;
++        startup-delay-us = <70000>;
++        regulator-always-on;
++        regulator-boot-on;
++    };
++    reg_wifi_vmmc: regulator-wifi {
++        compatible = "regulator-fixed";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_wifi_power>;
++        regulator-name = "wifi-3v3";
++        vin-supply = <&reg_wifi_parent>;
++        regulator-min-microvolt = <3300000>;
++        regulator-max-microvolt = <3300000>;
++        gpio = <&gpio1 15 GPIO_ACTIVE_HIGH>;
++        enable-active-high;
++        startup-delay-us = <20000>;
++        off-on-delay-us = <20000>;
++    };
++    wifi_pwrseq: wifi-pwrseq {
++        compatible = "mmc-pwrseq-simple";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_wifi_regon>;
++        /* SD1_RESET_B connects directly to AP6256 WL_REG_ON. */
++        reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
++        post-power-on-delay-ms = <200>;
++        power-off-delay-us = <5000>;
++    };
++    leds {
++        compatible = "gpio-leds";
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_gpio_led>;
++        cpu_led: cpu {
++            label = "green:status";
++            gpios = <&gpio3 16 GPIO_ACTIVE_LOW>;
++            linux,default-trigger = "heartbeat";
++        };
++        user_led: user {
++            label = "green:user";
++            gpios = <&gpio5 4 GPIO_ACTIVE_LOW>;
++        };
++    };
++};
++
++&A53_0 { cpu-supply = <&buck2_reg>; };
++&A53_1 { cpu-supply = <&buck2_reg>; };
++&A53_2 { cpu-supply = <&buck2_reg>; };
++&A53_3 { cpu-supply = <&buck2_reg>; };
++
++&uart2 {
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_uart2>;
++    status = "okay";
++};
++
++&fec1 {
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_fec1>;
++    phy-mode = "rgmii-id";
++    phy-handle = <&ethphy0>;
++    status = "okay";
++    mdio {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        ethphy0: ethernet-phy@4 {
++            compatible = "ethernet-phy-ieee802.3-c22";
++            reg = <4>;
++            /* Q41 inverts SAI2_RXC: GPIO high asserts PHY RESET_N. */
++            reset-gpios = <&gpio4 22 GPIO_ACTIVE_HIGH>;
++            reset-assert-us = <15000>;
++            reset-deassert-us = <100000>;
++            motorcomm,auto-sleep-disabled;
++            motorcomm,keep-pll-enabled;
++            rx-internal-delay-ps = <1950>;
++            tx-internal-delay-ps = <1950>;
++        };
++    };
++};
++
++&usdhc2 {
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_sd_cd>;
++    cd-gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
++    bus-width = <4>;
++    max-frequency = <50000000>;
++    no-1-8-v;
++    vmmc-supply = <&reg_sd_vmmc>;
++    status = "okay";
++};
++
++/* eMMC, Bluetooth, PCIe and display remain outside this bring-up. */
++&usdhc1 {
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_usdhc1>;
++    bus-width = <4>;
++    max-frequency = <50000000>;
++    cap-sd-highspeed;
++    cap-sdio-irq;
++    non-removable;
++    no-1-8-v;
++    vmmc-supply = <&reg_wifi_vmmc>;
++    vqmmc-supply = <&reg_wifi_vmmc>;
++    mmc-pwrseq = <&wifi_pwrseq>;
++    status = "okay";
++    #address-cells = <1>;
++    #size-cells = <0>;
++    wifi@1 {
++        compatible = "brcm,bcm4329-fmac";
++        reg = <1>;
++        brcm,board-type = "myir,mys-8mmx-v2";
++    };
++};
++&usdhc3 { status = "disabled"; };
++&wdog1 {
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_wdog>;
++    fsl,ext-reset-output;
++    status = "okay";
++};
++
++&i2c1 {
++	clock-frequency = <100000>;
++	pinctrl-names = "default", "gpio";
++	pinctrl-0 = <&pinctrl_i2c1>;
++	pinctrl-1 = <&pinctrl_i2c1_gpio>;
++	scl-gpios = <&gpio5 14 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	sda-gpios = <&gpio5 15 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
++	status = "okay";
++
++	pmic@4b {
++		compatible = "rohm,bd71847";
++		reg = <0x4b>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pmic>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++		rohm,reset-snvs-powered;
++
++		regulators {
++			buck1_reg: BUCK1 {
++				regulator-name = "BUCK1";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1300000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <1250>;
++			};
++
++			buck2_reg: BUCK2 {
++				regulator-name = "BUCK2";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1300000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <1250>;
++				rohm,dvs-run-voltage = <1000000>;
++				rohm,dvs-idle-voltage = <900000>;
++			};
++
++			buck3_reg: BUCK3 {
++				// BUCK5 in datasheet
++				regulator-name = "BUCK3";
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck4_reg: BUCK4 {
++				// BUCK6 in datasheet
++				regulator-name = "BUCK4";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck5_reg: BUCK5 {
++				// BUCK7 in datasheet
++				regulator-name = "BUCK5";
++				regulator-min-microvolt = <1605000>;
++				regulator-max-microvolt = <1995000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck6_reg: BUCK6 {
++				// BUCK8 in datasheet
++				regulator-name = "BUCK6";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <1400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo1_reg: LDO1 {
++				regulator-name = "LDO1";
++				regulator-min-microvolt = <1600000>;
++				regulator-max-microvolt = <1900000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo2_reg: LDO2 {
++				regulator-name = "LDO2";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <900000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo3_reg: LDO3 {
++				regulator-name = "LDO3";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo4_reg: LDO4 {
++				regulator-name = "LDO4";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo6_reg: LDO6 {
++				regulator-name = "LDO6";
++				regulator-min-microvolt = <900000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++		};
++	};
++};
++&iomuxc {
++    pinctrl_wifi_parent: wifi-parent-grp {
++        fsl,pins = <MX8MM_IOMUXC_SD1_STROBE_GPIO2_IO11 0x41>;
++    };
++    pinctrl_wifi_power: wifi-power-grp {
++        fsl,pins = <MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15 0x41>;
++    };
++    pinctrl_wifi_regon: wifi-regon-grp {
++        fsl,pins = <MX8MM_IOMUXC_SD1_RESET_B_GPIO2_IO10 0x41>;
++    };
++    pinctrl_usdhc1: usdhc1grp {
++        fsl,pins = <
++            MX8MM_IOMUXC_SD1_CLK_USDHC1_CLK 0x190
++            MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD 0x1d0
++            MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0 0x1d0
++            MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1 0x1d0
++            MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2 0x1d0
++            MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3 0x1d0
++        >;
++    };
++    pinctrl_i2c1_gpio: i2c1-gpio-grp {
++        fsl,pins = <
++            MX8MM_IOMUXC_I2C1_SCL_GPIO5_IO14 0x400001c3
++            MX8MM_IOMUXC_I2C1_SDA_GPIO5_IO15 0x400001c3
++        >;
++    };
++pinctrl_fec1: fec1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_ENET_MDC_ENET1_MDC			0x3
++			MX8MM_IOMUXC_ENET_MDIO_ENET1_MDIO		0x3
++			MX8MM_IOMUXC_ENET_TD3_ENET1_RGMII_TD3		0x1f
++			MX8MM_IOMUXC_ENET_TD2_ENET1_RGMII_TD2		0x1f
++			MX8MM_IOMUXC_ENET_TD1_ENET1_RGMII_TD1		0x1f
++			MX8MM_IOMUXC_ENET_TD0_ENET1_RGMII_TD0		0x1f
++			MX8MM_IOMUXC_ENET_RD3_ENET1_RGMII_RD3		0x91
++			MX8MM_IOMUXC_ENET_RD2_ENET1_RGMII_RD2		0x91
++			MX8MM_IOMUXC_ENET_RD1_ENET1_RGMII_RD1		0x91
++			MX8MM_IOMUXC_ENET_RD0_ENET1_RGMII_RD0		0x91
++			MX8MM_IOMUXC_ENET_TXC_ENET1_RGMII_TXC		0x1f
++			MX8MM_IOMUXC_ENET_RXC_ENET1_RGMII_RXC		0x91
++			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
++			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
++			MX8MM_IOMUXC_SAI2_RXC_GPIO4_IO22		0x19
++		>;
++	};
++pinctrl_i2c1: i2c1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_I2C1_SCL_I2C1_SCL			0x400001c3
++			MX8MM_IOMUXC_I2C1_SDA_I2C1_SDA			0x400001c3
++		>;
++	};
++pinctrl_pmic: pmicirq {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO03_GPIO1_IO3		0x141
++		>;
++	};
++pinctrl_uart2: uart2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
++			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX	0x140
++		>;
++	};
++pinctrl_gpio_led: gpioledgrp {
++		fsl,pins = <
++				MX8MM_IOMUXC_SPDIF_RX_GPIO5_IO4            0x00000116
++				MX8MM_IOMUXC_NAND_READY_B_GPIO3_IO16       0x00000116
++		>;
++	};
++pinctrl_wdog: wdoggrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B	0xc6
++		>;
++	};
++pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
++			MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
++			MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
++			MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
++			MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
++			MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
++			MX8MM_IOMUXC_GPIO1_IO04_USDHC2_VSELECT	0x1d0
++		>;
++	};
++    pinctrl_sd_cd: sdcdgrp {
++        fsl,pins = <MX8MM_IOMUXC_SD2_CD_B_GPIO2_IO12 0x1c4>;
++    };
++};
++
++/* Vendor secure firmware owns CAAM resources; use software crypto for bring-up. */
++&crypto { status = "disabled"; };
++
++/* USB2 feeds the fixed-power FE1.1 hub and the two Type-A ports. */
++/* J2 Type-C uses USB1. POC6 is fixed Host, not dual-role/gadget. */
++&usbphynop1 {
++    status = "okay";
++};
++&usbotg1 {
++    dr_mode = "host";
++    disable-over-current;
++    status = "okay";
++};
++&usbphynop2 {
++    vbus-supply = <&reg_usb_host_vbus>;
++    status = "okay";
++};
++&usbotg2 {
++    dr_mode = "host";
++    disable-over-current;
++    status = "okay";
++};
++
++&i2c2 {
++    clock-frequency = <100000>;
++    pinctrl-names = "default";
++    pinctrl-0 = <&pinctrl_i2c2>;
++    status = "okay";
++    rtc_external: rtc@32 {
++        compatible = "epson,rx8025t";
++        reg = <0x32>;
++    };
++};
++&iomuxc {
++    pinctrl_i2c2: i2c2-grp {
++        fsl,pins = <
++            MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL 0x400001c3
++            MX8MM_IOMUXC_I2C2_SDA_I2C2_SDA 0x400001c3
++        >;
++    };
++};
+diff --git a/target/linux/imx/image/cortexa53.mk b/target/linux/imx/image/cortexa53.mk
+index 378bf67..b9f1b9f 100644
+--- a/target/linux/imx/image/cortexa53.mk
++++ b/target/linux/imx/image/cortexa53.mk
+@@ -79,3 +79,17 @@ define Device/gateworks_venice
+   IMAGE/img.gz := boot-scr | boot-img-ext4 | sdcard-img-ext4 | gzip | append-metadata
+ endef
+ TARGET_DEVICES += gateworks_venice
++
++# MYS-8MMX-V2 initial wired image; vendor boot chain is assembled separately.
++define Device/myir_mys-8mmx-v2
++  $(call Device/Default)
++  DEVICE_VENDOR := MYIR
++  DEVICE_MODEL := MYS-8MMX-V2
++  DEVICE_DTS := imx8mm-mys-8mmx-v2
++  SUPPORTED_DEVICES := myir,mys-8mmx-v2
++  FILESYSTEMS := ext4
++  DEVICE_PACKAGES := kmod-gpio-button-hotplug kmod-leds-gpio
++  IMAGES := rootfs.img.gz
++  IMAGE/rootfs.img.gz := append-rootfs | gzip
++endef
++TARGET_DEVICES += myir_mys-8mmx-v2
+diff --git a/target/linux/imx/patches-6.12/950-myir-usb-phy-optional-vbus.patch b/target/linux/imx/patches-6.12/950-myir-usb-phy-optional-vbus.patch
+new file mode 100644
+index 0000000..516c213
+--- /dev/null
++++ b/target/linux/imx/patches-6.12/950-myir-usb-phy-optional-vbus.patch
+@@ -0,0 +1,30 @@
++From: Yang Siyuan <hsyysy@163.com>
++Subject: usb: phy: generic: request VBUS only if described
++
++Adapted for the MYIR Linux 6.12 build from the posted Linux USB patch:
++https://lore.kernel.org/linux-usb/20261026144800.1392738-1-hsyysy@163.com/
++The patch is a local backport of a proposal, not a claim of upstream merge.
++Do not substitute an imaginary fixed 5V regulator for an unknown Type-C path.
++
++--- a/drivers/usb/phy/phy-generic.c
+++++ b/drivers/usb/phy/phy-generic.c
++@@ -21,6 +21,7 @@
++ #include <linux/clk.h>
++ #include <linux/regulator/consumer.h>
++ #include <linux/of.h>
+++#include <linux/property.h>
++ #include <linux/gpio/consumer.h>
++ #include <linux/delay.h>
++ 
++@@ -256,7 +257,10 @@ int usb_phy_gen_create_phy(struct device
++ 		return dev_err_probe(dev, PTR_ERR(nop->vcc),
++ 				     "could not get vcc regulator\n");
++ 
++-	nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
+++	if (device_property_present(dev, "vbus-supply"))
+++		nop->vbus_draw = devm_regulator_get_exclusive(dev, "vbus");
+++	else
+++		nop->vbus_draw = NULL;
++ 	if (PTR_ERR(nop->vbus_draw) == -ENODEV)
++ 		nop->vbus_draw = NULL;
++ 	if (IS_ERR(nop->vbus_draw))

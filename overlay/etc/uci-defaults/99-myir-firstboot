@@ -1,0 +1,12 @@
+#!/bin/sh
+uci set system.@system[0].hostname='mys-8mmx-v2'
+uci set dhcp.lan=dhcp
+uci set dhcp.lan.interface='lan'
+uci set dhcp.lan.ignore='1'
+uci set dropbear.@dropbear[0].Interface='lan'
+uci set dropbear.@dropbear[0].PasswordAuth='on'
+uci set dropbear.@dropbear[0].RootPasswordAuth='on'
+uci commit system
+uci commit dhcp
+uci commit dropbear
+exit 0

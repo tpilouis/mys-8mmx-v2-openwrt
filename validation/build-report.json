@@ -1,0 +1,167 @@
+{
+  "status": "build_candidate_hardware_test_pending",
+  "base_release": "25.12.6",
+  "candidate": "POC6 Type-C Host RX8025T",
+  "bootloader": "2025.04 MYIR POC1a unchanged",
+  "source_commit": "71dbef3fd854850a810c93416c16d32d3fc82734",
+  "disk_signature": "4d595232",
+  "boot_offset_bytes": 33792,
+  "boot_partition_offset_bytes": 8388608,
+  "root_partition_offset_bytes": 75497472,
+  "root_partuuid": "4d595232-02",
+  "management_ip": "DHCP client; see router lease or serial console",
+  "dhcp_server": false,
+  "hardware_test": false,
+  "files": [
+    {
+      "name": "ap6256-firmware-provenance.json",
+      "bytes": 798,
+      "sha256": "f325e7c1dda3729980c0ac2017971cd2db20cb64db8a6c9fac91d63b46f3439f"
+    },
+    {
+      "name": "artifact-check.log",
+      "bytes": 609,
+      "sha256": "eca05adf6dc90ba8fd031a592b9657ade0985bcc92246833c3af8b4c12520abd"
+    },
+    {
+      "name": "boot-openwrt.cmd",
+      "bytes": 595,
+      "sha256": "745e9702ba6c699e39d8bda6678fb3767f4677b3120c8f3c84ffa05c3117f467"
+    },
+    {
+      "name": "boot.scr",
+      "bytes": 667,
+      "sha256": "4700e6b18248f9a5e3e82332f5680fcef9a8284ff08fb04b90116e8c4cde83d4"
+    },
+    {
+      "name": "build-kit.zip",
+      "bytes": 115702,
+      "sha256": "f98175af01cc6c1231a80f2abf9f8036c60d07734c0cbbe397d735d6b7cf3805"
+    },
+    {
+      "name": "feeds-pinned.txt",
+      "bytes": 703,
+      "sha256": "4d0616c8c4b47d367ff9afb9f3603d715f3ab7b4130adcffb892fe7e2669077a"
+    },
+    {
+      "name": "final-disk-check.log",
+      "bytes": 629,
+      "sha256": "be41eedfa272b1661436fb7c4f442a3c70449b42a9f0d0cbac8bd1cd009d2322"
+    },
+    {
+      "name": "git-fsck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "Image",
+      "bytes": 14882824,
+      "sha256": "108349d3ae655c75f7d3eb719603dc1fbc5036f0e67b625a0bf62e9e3e89db27"
+    },
+    {
+      "name": "imx-boot-poc1a",
+      "bytes": 1098576,
+      "sha256": "42c8e8c4b256fdc819b5b20c88569e40b69f8db72ff5c6bf92e4c31790e524c0"
+    },
+    {
+      "name": "imx8mm-mys-8mmx-v2.dtb",
+      "bytes": 44758,
+      "sha256": "65da7e8a4464f0e5bec5ce5a92245ce7ac54160b779d8dc3d470ccbf2fd70db9"
+    },
+    {
+      "name": "imx8mm-mys-8mmx-v2.dts",
+      "bytes": 11709,
+      "sha256": "59ecc95379dbe5c4f434739311d9c3c9a424c8d0cdc98a8dd62a6dbe48cbe8c3"
+    },
+    {
+      "name": "kernel-build.config",
+      "bytes": 138251,
+      "sha256": "6b21a2c16731949774649d1eafc50f89ab8b8e6ef538f81ee50b32acea83b255"
+    },
+    {
+      "name": "myir-diffconfig",
+      "bytes": 3303,
+      "sha256": "b1cf7e7a712f8156a72df37b72ce6f29099af35f179e44ac319c3c9eb84f4213"
+    },
+    {
+      "name": "myir-openwrt-port.patch",
+      "bytes": 22924,
+      "sha256": "ed79d428015bedeb33520990ade923b96d7307b8f39561a087a24900684fee61"
+    },
+    {
+      "name": "myir-rootfs-overlay.tar.gz",
+      "bytes": 403736,
+      "sha256": "b74b17e77d27b1feb538521b6e8fa822aa16843d7bfc5f6f83c9d734e0123ef6"
+    },
+    {
+      "name": "openwrt-25.12.6-imx-cortexa53-myir_mys-8mmx-v2-initramfs-kernel.bin",
+      "bytes": 31987720,
+      "sha256": "b102ea32ee6f959b1c0c5fe42de82da181b5fb2c43946f300aa0c82e9ca2707b"
+    },
+    {
+      "name": "openwrt-25.12.6-imx-cortexa53-myir_mys-8mmx-v2.manifest",
+      "bytes": 4940,
+      "sha256": "a2e97b1d3bf844a845a69ac022efa8266d4581ed7e890c109394334167b7b184"
+    },
+    {
+      "name": "openwrt-25.12.6-mys-8mmx-v2-sd-typec-host-poc6.img",
+      "bytes": 612368384,
+      "sha256": "41fb97c2a8cb9223a9d137e28ef0e1bfdbb6b8570e148576bc7a86bf784515b0"
+    },
+    {
+      "name": "openwrt-25.12.6-mys-8mmx-v2-sd-typec-host-poc6.img.gz",
+      "bytes": 14352102,
+      "sha256": "6cb84faf9f8d9ec2d7d6bcc533c4fab7f541efb429f1c75b8a8f4e754836e414"
+    },
+    {
+      "name": "openwrt-build.config",
+      "bytes": 281965,
+      "sha256": "524253d815e4624ababedea4dea1ebad32867ec010291565b159b0513dc794fc"
+    },
+    {
+      "name": "package-changes.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "phy-optional-vbus-test.log",
+      "bytes": 193,
+      "sha256": "0e9a2ca997dbb7f3864519a5dc809639d80fa90888b7795d4a6d4d5cf48256fc"
+    },
+    {
+      "name": "README-POC6.txt",
+      "bytes": 1730,
+      "sha256": "c869656afb77abb9cffb3e95c60120846ef1ee978d339de87586c47f0b8dac18"
+    },
+    {
+      "name": "regenerate.log",
+      "bytes": 1239275,
+      "sha256": "c003b0cebe5cdc46161920f0412e8e267c228fa279cf748d2580d5cf2a9956ee"
+    },
+    {
+      "name": "rtc-protocol-test.log",
+      "bytes": 213,
+      "sha256": "20b4609ebf669cf66a92bca854bae6d6a16e2935a6e8a49baa7faaf9c7175263"
+    },
+    {
+      "name": "rtc-rx8025t.c",
+      "bytes": 5726,
+      "sha256": "28f8e5b513e543b9a149fbe3cc6d17f085348c50c12e06518fcb68b09ecce1c2"
+    },
+    {
+      "name": "source-provenance.json",
+      "bytes": 1239,
+      "sha256": "e466f6ce2793fcb94c783649ef504c334242cae73d95902db655a444cf31acaf"
+    },
+    {
+      "name": "userspace-smoke.json",
+      "bytes": 2066,
+      "sha256": "45a327d3b86cd4ade0a06efb75e35a61480d112bf71a90ba472a24764930f0a0"
+    }
+  ],
+  "offline_checks": "passed: DTB, RX8025T module/autoload, USB Host and storage configuration, filesystem consistency, ARM64 SSH/rpcd/LuCI HTTP/HTTPS and tools",
+  "date": "2026-11-07",
+  "package_changes": [],
+  "regenerated_after_storage_failure": true,
+  "final_image_verification": "PASS: extracted FAT/ext4, 890 regular files, full partition comparison, gzip roundtrip"
+}

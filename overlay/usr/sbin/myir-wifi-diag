@@ -1,0 +1,18 @@
+#!/bin/sh
+echo '=== MYIR POC6 Wi-Fi diagnostics (no SSID/password dump) ==='
+cat /etc/myir-build
+ubus call system board
+echo '=== SDIO ==='
+ls -l /sys/bus/sdio/devices
+for p in /sys/bus/sdio/devices/*; do
+    [ -d "$p" ] || continue
+    echo "$p"
+    cat "$p/vendor" "$p/device" "$p/modalias" 2>/dev/null
+done
+echo '=== Wi-Fi PHYs and interfaces ==='
+iw phy
+iw dev
+ip addr show
+echo '=== GPIO and SDIO/firmware messages ==='
+cat /sys/kernel/debug/gpio 2>/dev/null
+dmesg | grep -iE 'mmc|sdio|brcm|firmware|wlan|regulatory|cfg80211'
