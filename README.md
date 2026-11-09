@@ -2,7 +2,7 @@
 
 Private board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB V10, i.MX8MM Quad / 2 GiB DDR4. This repository is a pinned OpenWrt port kit, not a fork containing the full upstream history. It preserves the local POC6 baseline and subsequent POC7/POC8 changes in separate commits/tags.
 
-## Current snapshot: POC8 PCIe Gen2 x1 candidate
+## Current snapshot: POC8 PCIe Gen2 x1 read-validated
 
 OpenWrt maintenance commit `71dbef3fd854850a810c93416c16d32d3fc82734`, Linux 6.12.113; feeds are pinned in `configs/feeds.conf`. The OpenWrt label remains 25.12.6 with local maintenance changes; this is not an official supported device image.
 
@@ -13,7 +13,7 @@ OpenWrt maintenance commit `71dbef3fd854850a810c93416c16d32d3fc82734`, Linux 6.1
 
 POC7 adds PCIe x1 Gen1 with CPU-sourced reference clock, NVMe driver/autoload, pciutils/nvme-cli and `myir-m2-diag`. Offline validation passed. Board boot without SSD passed: Root Port registered, NVMe modules loaded, no endpoint/link (expected with an empty socket). On 2026-11-09, TS256GMTE400S 256GB enumeration, Gen1 x1 link, FAT32 read-only mount/list, complete kernel8.img read and unmount passed. Independent reference hash comparison and write/endurance tests remain pending. See `docs/HARDWARE-STATUS.md`.
 
-POC8 raises the PCIe target from Gen1 x1 to Gen2 x1 (5 GT/s) and adds sysfs negotiated-speed diagnostics. Compiled DTB comparison confirms only model labels and the Root Port speed change. Offline checks passed; actual Gen2 negotiation/read/stability are **pending**. Keep POC7 as the read-tested rollback baseline. See `docs/POC8-GEN2-TEST.md`.
+POC8 raises the PCIe target from Gen1 x1 to Gen2 x1 (5 GT/s) and adds sysfs negotiated-speed diagnostics. Compiled DTB comparison confirms only model labels and the Root Port speed change. Offline checks passed. On 2026-11-09 the user verified Gen2 x1 (5 GT/s) on both Root Port and SSD, live NVMe controller/partitions, FAT32 read-only mount, complete kernel8.img read and unmount. The file SHA256 matches the prior Gen1 read. Write, throughput and long-term stability tests remain pending. Keep POC7 as the read-tested rollback baseline. See `docs/POC8-GEN2-TEST.md`.
 
 ## Contents
 

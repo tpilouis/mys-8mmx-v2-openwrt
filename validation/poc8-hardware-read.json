@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-09",
+  "candidate": "POC8",
+  "method": "User-run board tests; supplied serial console output",
+  "board": "MYIR MYS-8MMX-V2 V10",
+  "ssd_model": "TS256GMTE400S",
+  "negotiated_speed_gt_s": 5.0,
+  "negotiated_width": 1,
+  "nvme_controller_state": "live",
+  "namespace": "/dev/nvme0n1",
+  "read_partition": "/dev/nvme0n1p1",
+  "filesystem": "FAT32",
+  "mount_mode": "read-only",
+  "file": "kernel8.img",
+  "sha256": "55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca",
+  "sha256_matches_prior_gen1_test": true,
+  "independent_original_hash_comparison": false,
+  "unmount": "passed",
+  "status": "Gen2 link and read-only test passed",
+  "pending": [
+    "write",
+    "measured throughput",
+    "repeated cold boots",
+    "long-term stability"
+  ]
+}

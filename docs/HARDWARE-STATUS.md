@@ -19,3 +19,11 @@ User test with TS256GMTE400S: PCIe Gen1 x1 link up, Root Port DLActive+, NVMe co
 ## POC8 Gen2 candidate — 2026-11-09
 
 Only Root Port maximum link speed is changed to Gen2, with version markers and read-only sysfs link-speed diagnostics. Compiled DTBs compared against POC7: only model labels and intended speed property differ. Offline NVMe/tools/SSH/LuCI/FAT/ext4/gzip/913-file integrity checks passed. Physical Gen2 5GT/s x1 negotiation, read test and stability remain pending. If it negotiates 2.5GT/s, Gen2 has not passed. U-Boot, DDR timing, clock routing and power/reset unchanged. Keep POC7 as rollback.
+
+## POC8 Gen2 board read test — 2026-11-09
+
+Supersedes the pending negotiation/read status above. User board DIAG reports `PCIe Gen.2 x1 link up`; Root Port and SSD sysfs both report 5.0 GT/s, width 1. Root Port DLActive+, TS256GMTE400S controller live, 256.06GB namespace and existing FAT32/ext4 partitions recognized. AER status flags in the supplied snapshot do not show errors; this is not an endurance result.
+
+User mounted `/dev/nvme0n1p1` with `-t vfat -o ro`, read the complete `kernel8.img` with sha256sum and unmounted successfully. SHA256: `55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca`, identical to the prior Gen1 test on the same SSD/file. This is cross-speed read consistency, not an independent comparison to an original distribution image.
+
+PASS: Gen2 x1 negotiation, NVMe/partition detection, FAT32 read-only mount, complete file read and unmount. No SSD formatting/write performed in this test. Write, measured throughput, repeated cold boots and long-term stability remain untested.

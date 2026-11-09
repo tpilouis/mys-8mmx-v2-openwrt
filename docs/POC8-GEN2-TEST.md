@@ -23,3 +23,10 @@ Expected hash above if the file is unchanged. Do not format or write SSD. Repeat
 
 Fresh wired LAN uses DHCP and Wi-Fi starts disabled until configured. Initial password remains in the separately held private INITIAL-ACCESS.txt. No root credentials are published to Git.
 RTC battery retention, NOR boot, NVMe write/endurance tests remain deferred.
+## POC8 Gen2 board read test — 2026-11-09
+
+Supersedes the pending negotiation/read status above. User board DIAG reports `PCIe Gen.2 x1 link up`; Root Port and SSD sysfs both report 5.0 GT/s, width 1. Root Port DLActive+, TS256GMTE400S controller live, 256.06GB namespace and existing FAT32/ext4 partitions recognized. AER status flags in the supplied snapshot do not show errors; this is not an endurance result.
+
+User mounted `/dev/nvme0n1p1` with `-t vfat -o ro`, read the complete `kernel8.img` with sha256sum and unmounted successfully. SHA256: `55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca`, identical to the prior Gen1 test on the same SSD/file. This is cross-speed read consistency, not an independent comparison to an original distribution image.
+
+PASS: Gen2 x1 negotiation, NVMe/partition detection, FAT32 read-only mount, complete file read and unmount. No SSD formatting/write performed in this test. Write, measured throughput, repeated cold boots and long-term stability remain untested.
