@@ -8,11 +8,11 @@
   "wpa_supplicant_version": "wpa_supplicant v2.12-devel\nCopyright (c) 2003-2024, Jouni Malinen <j@w1.fi> and contributors",
   "uci_initialization": "passed",
   "dropbear_version": "Dropbear v2025.89",
-  "candidate": "OpenWrt 25.12.6 MYIR MYS-8MMX-V2 POC7 M.2 NVMe Gen1 candidate, 2026-11-08",
+  "candidate": "OpenWrt 25.12.6 MYIR MYS-8MMX-V2 POC8 M.2 NVMe Gen2 x1 candidate, 2026-11-09",
   "poc2_shell_syntax": "passed",
   "ethtool_version": "ethtool version 6.15",
   "poc2_diagnostic_tools": "present",
-  "theme_preflight": "access=true stat={ \"dev\": { \"major\": 0, \"minor\": 85 }, \"perm\": { \"setuid\": false, \"setgid\": false, \"sticky\": false, \"user_read\": true, \"user_write\": true, \"user_exec\": false, \"group_read\": true, \"group_write\": false, \"group_exec\": false, \"other_read\": true, \"other_write\": false, \"other_exec\": false }, \"inode\": 4711187, \"mode\": 420, \"nlink\": 1, \"uid\": 0, \"gid\": 0, \"size\": 3705, \"blksize\": 4096, \"blocks\": 8, \"atime\": 1793988524, \"mtime\": 1793988524, \"ctime\": 1794100681, \"type\": \"file\" }\ntemplate_compile_ok\n",
+  "theme_preflight": "access=true stat={ \"dev\": { \"major\": 0, \"minor\": 85 }, \"perm\": { \"setuid\": false, \"setgid\": false, \"sticky\": false, \"user_read\": true, \"user_write\": true, \"user_exec\": false, \"group_read\": true, \"group_write\": false, \"group_exec\": false, \"other_read\": true, \"other_write\": false, \"other_exec\": false }, \"inode\": 5364784, \"mode\": 420, \"nlink\": 1, \"uid\": 0, \"gid\": 0, \"size\": 3705, \"blksize\": 4096, \"blocks\": 8, \"atime\": 1793988524, \"mtime\": 1793988524, \"ctime\": 1794229486, \"type\": \"file\" }\ntemplate_compile_ok\n",
   "ssh_password_login": "passed under ARM64 userspace emulation",
   "luci_rpc_password_auth": "passed with real rpcd",
   "http_/": {

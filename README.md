@@ -1,8 +1,8 @@
 # MYIR MYS-8MMX-V2 OpenWrt
 
-Private board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB V10, i.MX8MM Quad / 2 GiB DDR4. This repository is a pinned OpenWrt port kit, not a fork containing the full upstream history. It preserves the local POC6 baseline and subsequent POC7 changes in separate commits/tags.
+Private board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB V10, i.MX8MM Quad / 2 GiB DDR4. This repository is a pinned OpenWrt port kit, not a fork containing the full upstream history. It preserves the local POC6 baseline and subsequent POC7/POC8 changes in separate commits/tags.
 
-## Current snapshot: POC7 M.2 / NVMe candidate
+## Current snapshot: POC8 PCIe Gen2 x1 candidate
 
 OpenWrt maintenance commit `71dbef3fd854850a810c93416c16d32d3fc82734`, Linux 6.12.113; feeds are pinned in `configs/feeds.conf`. The OpenWrt label remains 25.12.6 with local maintenance changes; this is not an official supported device image.
 
@@ -11,7 +11,9 @@ OpenWrt maintenance commit `71dbef3fd854850a810c93416c16d32d3fc82734`, Linux 6.1
 - POC6 Type-C read-only FAT mount and complete 35,373,568-byte Image read passed on board; SHA256 `7880ec0586b87ae7fc391373594a2cd871334154aad9b4c62e57dec79cf6c38f`; unmount passed.
 - RTC battery retention, NOR boot and USB write/endurance tests remain deferred.
 
-POC7 adds PCIe x1 Gen1 with CPU-sourced reference clock, NVMe driver/autoload, pciutils/nvme-cli and `myir-m2-diag`. Offline validation passed. Board boot without SSD passed: Root Port registered, NVMe modules loaded, no endpoint/link (expected with an empty socket). Actual SSD enumeration/read is pending with Transcend TS256GMTE400S 256GB 2242 NVMe. See `docs/HARDWARE-STATUS.md`.
+POC7 adds PCIe x1 Gen1 with CPU-sourced reference clock, NVMe driver/autoload, pciutils/nvme-cli and `myir-m2-diag`. Offline validation passed. Board boot without SSD passed: Root Port registered, NVMe modules loaded, no endpoint/link (expected with an empty socket). On 2026-11-09, TS256GMTE400S 256GB enumeration, Gen1 x1 link, FAT32 read-only mount/list, complete kernel8.img read and unmount passed. Independent reference hash comparison and write/endurance tests remain pending. See `docs/HARDWARE-STATUS.md`.
+
+POC8 raises the PCIe target from Gen1 x1 to Gen2 x1 (5 GT/s) and adds sysfs negotiated-speed diagnostics. Compiled DTB comparison confirms only model labels and the Root Port speed change. Offline checks passed; actual Gen2 negotiation/read/stability are **pending**. Keep POC7 as the read-tested rollback baseline. See `docs/POC8-GEN2-TEST.md`.
 
 ## Contents
 
@@ -26,7 +28,7 @@ python3 tools/prepare.py
 # For a different Linux build path: python3 tools/prepare.py --work /home/USER/work/myir-openwrt
 # Adjust subsequent work path accordingly.
 docker build -t myir/openwrt-build:noble -f tools/Dockerfile .
-docker run --rm -v "$PWD/.work/openwrt:/work" -v "$PWD/tools:/setup:ro" -w /work myir/openwrt-build:noble bash -lc './scripts/feeds update -a && bash /setup/build-poc7.sh'
+docker run --rm -v "$PWD/.work/openwrt:/work" -v "$PWD/tools:/setup:ro" -w /work myir/openwrt-build:noble bash -lc './scripts/feeds update -a && bash /setup/build-poc8.sh'
 ```
 
 The builder runs as uid/gid 1000. Ensure your build directory is writable by that uid. The preparation script downloads the pinned vendor firmware and calibration files and verifies their SHA256; no firmware payload is stored in this repository. Consult the vendor firmware licensing before redistribution.
@@ -40,8 +42,8 @@ Provide the separately held `imx-boot-mys8mmx-v2-2025.04-poc1a.bin` in a private
 ```sh
 mkdir -p output
 # Set BOOTLOADER_DIR to an absolute directory containing the file above.
-docker run --rm -v "$PWD/.work/openwrt:/work:ro" -v "$PWD/tools:/setup:ro" -v "$PWD/output:/output" -v "$BOOTLOADER_DIR:/bootloader:ro" myir/openwrt-build:noble python3 /setup/compose-poc7.py
-docker run --rm -v "$PWD/tools:/setup:ro" -v "$PWD/output:/output:ro" myir/openwrt-build:noble python3 /setup/verify-poc7.py
+docker run --rm -v "$PWD/.work/openwrt:/work:ro" -v "$PWD/tools:/setup:ro" -v "$PWD/output:/output" -v "$BOOTLOADER_DIR:/bootloader:ro" myir/openwrt-build:noble python3 /setup/compose-poc8.py
+docker run --rm -v "$PWD/tools:/setup:ro" -v "$PWD/output:/output:ro" myir/openwrt-build:noble python3 /setup/verify-poc8.py
 ```
 
 The compose script checks the boot blob hash, repairs bitmap padding on the exported rootfs copy, requires a clean EXT4 check, checks FAT and gzip roundtrip, and builds the complete SD image. Never flash an unverified output. Back up card contents and enable writer readback verification.

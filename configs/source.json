@@ -1,5 +1,5 @@
 {
   "upstream": "https://github.com/openwrt/openwrt.git",
   "commit": "71dbef3fd854850a810c93416c16d32d3fc82734",
-  "candidate": "poc7"
+  "candidate": "poc8"
 }

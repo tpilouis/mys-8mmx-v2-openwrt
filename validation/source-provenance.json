@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-08",
-  "candidate": "POC7 M.2 NVMe Gen1",
+  "date": "2026-11-09",
+  "candidate": "POC8 M.2 NVMe Gen2",
   "upstream_commit": "71dbef3fd854850a810c93416c16d32d3fc82734",
-  "baseline": "POC6 validated Type-C Host baseline; same pinned feeds",
+  "baseline": "POC7 Gen1 x1 NVMe read-tested baseline; same pinned feeds",
   "custom_patch": "myir-openwrt-port.patch",
   "vendor_reference": "MYiR-Dev/myir-imx-linux develop d1275dfcc8d52e51b720d42d95ee54853449970b arch/arm64/boot/dts/myir/mys-imx8mm-evk-v20.dts",
   "rtc": "I2C2 0x32 RX8025T, rtc0, boot-autoload module, UTC sysfixtime",
@@ -23,7 +23,7 @@
   "m2": {
     "connector": "J13 M-key 2242 NVMe",
     "lanes": 1,
-    "initial_link": "Gen1 2.5GT/s",
+    "initial_link": "Gen2 5GT/s",
     "refclk": "CPU output via V10 R950/R951",
     "reset": "GPIO4_21 active low",
     "clkreq": "I2C4_SCL_PCIE1_CLKREQ_B",

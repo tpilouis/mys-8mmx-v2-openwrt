@@ -1,5 +1,5 @@
 #!/bin/sh
-echo '=== MYIR POC7 M.2 read-only diagnostics ==='
+echo '=== MYIR POC8 M.2 read-only diagnostics ==='
 cat /etc/myir-build
 uname -r
 lspci -nn
@@ -14,3 +14,12 @@ for d in /sys/class/nvme/nvme*; do
     cat "$d/model" "$d/firmware_rev" "$d/state" 2>/dev/null
 done
 dmesg | grep -iE 'pci|nvme|regulator|link.*(up|down|fail)'
+echo '=== PCIe negotiated link (sysfs) ==='
+for dev in /sys/bus/pci/devices/*; do
+    [ -f "$dev/current_link_speed" ] || continue
+    echo "$dev"
+    for prop in current_link_speed current_link_width max_link_speed max_link_width; do
+        printf '%s: ' "$prop"
+        cat "$dev/$prop" 2>/dev/null
+    done
+done

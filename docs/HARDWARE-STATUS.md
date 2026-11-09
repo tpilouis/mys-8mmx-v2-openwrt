@@ -11,3 +11,11 @@ Offline: compiled PCIe x1 Gen1/CPU clock output/reset/supply/NVMe autoload check
 User board DIAG without SSD: Linux 6.12.113 booted, 00:00.0 Root Port registered, nvme/nvme_core loaded. `Phy link never came up`, `DLActive-`, no NVMe namespace: expected for an empty slot. LnkSta 2.5GT/s x1 alone is not evidence of link-up. `lspci` reported inability to load libkmod resources; PCI config output was available. Endpoint/SSD and actual I/O remain pending.
 
 Planned SSD: Transcend TS256GMTE400S 256GB M.2 2242 NVMe PCIe Gen3 x4. POC7 starts at Gen1 x1 for bring-up; board hardware upper limit is Gen2 x1. Power off before fitting SSD. First test: `myir-m2-diag`, namespace detection, then read-only existing files. No formatting or writes.
+
+## POC7 SSD test — 2026-11-09
+
+User test with TS256GMTE400S: PCIe Gen1 x1 link up, Root Port DLActive+, NVMe controller live, 256.06GB namespace and two partitions recognized. FAT32 nvme0n1p1 read-only mount/list/unmount passed. Complete kernel8.img read SHA256: `55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca`; no independent reference comparison. Existing Raspberry Pi data retained. No NVMe writes or endurance test.
+
+## POC8 Gen2 candidate — 2026-11-09
+
+Only Root Port maximum link speed is changed to Gen2, with version markers and read-only sysfs link-speed diagnostics. Compiled DTBs compared against POC7: only model labels and intended speed property differ. Offline NVMe/tools/SSH/LuCI/FAT/ext4/gzip/913-file integrity checks passed. Physical Gen2 5GT/s x1 negotiation, read test and stability remain pending. If it negotiates 2.5GT/s, Gen2 has not passed. U-Boot, DDR timing, clock routing and power/reset unchanged. Keep POC7 as rollback.

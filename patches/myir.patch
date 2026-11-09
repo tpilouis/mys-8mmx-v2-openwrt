@@ -260,12 +260,12 @@ index 95757ef..b933fcf 100644
 +CONFIG_MSDOS_PARTITION=y
 diff --git a/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts b/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts
 new file mode 100644
-index 0000000..73d8f40
+index 0000000..a43e035
 --- /dev/null
 +++ b/target/linux/imx/files/arch/arm64/boot/dts/freescale/imx8mm-mys-8mmx-v2.dts
 @@ -0,0 +1,448 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/* MYIR MYS-8MMX-V2 POC7: Type-C Host and RX8025T and USB2 Host on the POC4 baseline.
++/* MYIR MYS-8MMX-V2 POC8: Type-C Host and RX8025T and USB2 Host on the POC4 baseline.
 + * Pin assignments follow MYIR V2 BSP and V10 schematic.
 + * RTC and USB require hardware validation for this candidate.
 + */
@@ -274,7 +274,7 @@ index 0000000..73d8f40
 +#include <dt-bindings/phy/phy-imx8-pcie.h>
 +
 +/ {
-+    model = "MYIR MYS-8MMX-V2 (OpenWrt POC7 M.2 NVMe candidate)";
++    model = "MYIR MYS-8MMX-V2 (OpenWrt POC8 M.2 NVMe candidate)";
 +    compatible = "myir,mys-8mmx-v2", "fsl,imx8mm";
 +
 +    aliases {
@@ -645,7 +645,7 @@ index 0000000..73d8f40
 +&crypto { status = "disabled"; };
 +
 +/* USB2 feeds the fixed-power FE1.1 hub and the two Type-A ports. */
-+/* J2 Type-C uses USB1. POC7 is fixed Host, not dual-role/gadget. */
++/* J2 Type-C uses USB1. POC8 is fixed Host, not dual-role/gadget. */
 +&usbphynop1 {
 +    status = "okay";
 +};
@@ -699,8 +699,8 @@ index 0000000..73d8f40
 +    assigned-clocks = <&clk IMX8MM_CLK_PCIE1_AUX>, <&clk IMX8MM_CLK_PCIE1_CTRL>;
 +    assigned-clock-rates = <10000000>, <250000000>;
 +    assigned-clock-parents = <&clk IMX8MM_SYS_PLL2_50M>, <&clk IMX8MM_SYS_PLL2_250M>;
-+    /* Initial validation deliberately limits link to Gen1 (2.5 GT/s). */
-+    fsl,max-link-speed = <1>;
++    /* Gen2 x1 candidate after POC7 Gen1 NVMe read test. */
++    fsl,max-link-speed = <2>;
 +    status = "okay";
 +};
 +&iomuxc {

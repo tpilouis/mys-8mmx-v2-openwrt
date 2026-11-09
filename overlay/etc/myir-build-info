@@ -1,1 +1,1 @@
-POC7: POC6 baseline plus PCIe x1 Gen1 and NVMe. Original V2 Yocto pin mapping, modern PHY CPU clock output. SD boot and U-Boot unchanged. Physical PCIe/NVMe validation pending.
+POC8: POC7 baseline with PCIe target raised to Gen2 x1 (5 GT/s). Actual negotiated speed and stability require hardware tests. U-Boot, DDR and SD boot unchanged.
