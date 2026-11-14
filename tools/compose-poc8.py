@@ -6,6 +6,7 @@ import os
 import shutil
 import struct
 import subprocess
+from bootloader_artifact import validated_bootloader
 
 work = Path('/work')
 out = Path('/output')
@@ -35,9 +36,11 @@ dtb = dtbs[0]
 dtb_name = 'imx8mm-mys-8mmx-v2.dtb'
 if kernel.read_bytes()[56:60] != b'ARMd': raise RuntimeError('Invalid ARM64 kernel header')
 if dtb.read_bytes()[:4] != b'\xd0\x0d\xfe\xed': raise RuntimeError('Invalid device tree header')
-boot = Path('/bootloader/imx-boot-mys8mmx-v2-2025.04-poc1a.bin')
-expected_boot = '42c8e8c4b256fdc819b5b20c88569e40b69f8db72ff5c6bf92e4c31790e524c0'
-if digest(boot) != expected_boot: raise RuntimeError('POC1a boot chain checksum mismatch')
+boot, boot_provenance = validated_bootloader(Path('/bootloader'))
+expected_boot = boot_provenance['sha256']
+if boot.stat().st_size > 8 * 1024**2 - 33 * 1024:
+    raise RuntimeError('Boot image would overlap the first SD partition')
+(out / 'bootloader-provenance.json').write_text(json.dumps(boot_provenance, indent=2) + '\n')
 
 shutil.copyfile(kernel, out / 'Image')
 shutil.copyfile(dtb, out / dtb_name)
@@ -109,15 +112,13 @@ for source in bin_dir.glob('openwrt-25.12.6-*.manifest'):
 shutil.copyfile(work/'.config',out/'openwrt-build.config')
 shutil.copyfile(work/'myir-diffconfig',out/'myir-diffconfig')
 shutil.copyfile(work/'feeds-pinned.txt',out/'feeds-pinned.txt')
-report = {'status':'build_candidate_hardware_test_pending','base_release':'25.12.6','candidate':'POC8 M.2 NVMe candidate','bootloader':'2025.04 MYIR POC1a unchanged','source_commit':subprocess.check_output(['git','-C',str(work),'rev-parse','HEAD'],text=True).strip(),'disk_signature':'4d595232','boot_offset_bytes':33*1024,'boot_partition_offset_bytes':boot_start,'root_partition_offset_bytes':root_start,'root_partuuid':'4d595232-02','management_ip':'DHCP client; see router lease or serial console','dhcp_server':False,'hardware_test':False,'files':[]}
+configs=list((work/'build_dir').glob('target-*/linux-imx_cortexa53/linux-6.12.113/.config'))
+if len(configs) != 1: raise RuntimeError('Cannot uniquely identify compiled kernel configuration')
+shutil.copyfile(configs[0],out/'kernel-build.config')
+report = {'status':'build_candidate_hardware_test_pending','base_release':'25.12.6','candidate':'POC8 M.2 NVMe candidate','bootloader':'2025.04 MYIR POC1a','bootloader_provenance':boot_provenance,'source_commit':subprocess.check_output(['git','-C',str(work),'rev-parse','HEAD'],text=True).strip(),'disk_signature':'4d595232','boot_offset_bytes':33*1024,'boot_partition_offset_bytes':boot_start,'root_partition_offset_bytes':root_start,'root_partuuid':'4d595232-02','management_ip':'DHCP client; see router lease or serial console','dhcp_server':False,'hardware_test':False,'files':[]}
 for path in sorted(out.iterdir()):
     if path.is_file() and path.name not in ['SHA256SUMS.txt','build-report.json']:
         report['files'].append({'name':path.name,'bytes':path.stat().st_size,'sha256':digest(path)})
-(out/'SHA256SUMS.txt').write_text(''.join(row['sha256']+'  '+row['name']+'\n' for row in report['files']))
 (out/'build-report.json').write_text(json.dumps(report,indent=2))
+(out/'SHA256SUMS.txt').write_text(''.join(row['sha256']+'  '+row['name']+'\n' for row in report['files']) + digest(out/'build-report.json')+'  build-report.json\n')
 print('SD CANDIDATE CREATED AND STATICALLY VERIFIED:',compressed.name)
-
-
-configs=list((work/'build_dir').glob('target-*/linux-imx_cortexa53/linux-6.12.113/.config'))
-assert len(configs)==1
-shutil.copyfile(configs[0],out/'kernel-build.config')

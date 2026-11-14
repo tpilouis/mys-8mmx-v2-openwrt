@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-14",
+  "status": "from_source_components_and_integration_passed",
+  "openwrt_cold_build": "Previously completed in this independent MYIR-Clean with no old caches; see clean-build-20261114.json",
+  "boot_sources_cold_download": true,
+  "ddr_firmware_cold_download": true,
+  "old_prebuilt_boot_used": false,
+  "default_wrapper": "passed; OpenWrt reused only this clean environment own cache",
+  "skip_openwrt_wrapper": "passed",
+  "consent_and_integrity_tests": "6 executed, 6 passed",
+  "manifest_sha256": "0c6da59abc6e562e94756d5136d906e32b86c1fc198c0d703e773a60789eb936",
+  "patch_sha256": "514b2762664581fb890ef2c8954bd32db68619f7c0baf8508af9994fac0d6c01",
+  "boot_image": {
+    "name": "imx-boot-mys8mmx-v2-2025.04-poc1a.bin",
+    "bytes": 1098576,
+    "sha256": "53ad61e8ab66ec0740a8126f2fe466697a9d27a7c61d4522e3b2bf5539e5a1c0"
+  },
+  "matches_previous_tested_poc1a": false,
+  "sd_image": {
+    "name": "openwrt-25.12.6-mys-8mmx-v2-sd-nvme-poc8.img.gz",
+    "sha256": "ded5bdce4bd2537af0a013ca1caf88c68eb334d8cff5f2a20c52af119c721932"
+  },
+  "checks": [
+    "pinned source commits and original DDR timing",
+    "four DDR firmware hashes and embedded payloads",
+    "ARM64 SPL/U-Boot/BL31 ELF and ROM/FIT layout",
+    "compiled DTB/kernel module settings",
+    "EXT4/FAT, partition readback, 913 rootfs files, gzip roundtrip"
+  ],
+  "hardware_test": false,
+  "github_pushed": false,
+  "license": "Explicit acceptance flag required; test uses same NXP v11 terms previously accepted in this session; proprietary payloads excluded from Git"
+}

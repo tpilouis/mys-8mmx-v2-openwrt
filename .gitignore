@@ -11,6 +11,8 @@
 *.vhdx
 *.log
 *.zip
+*.bin
+*.part
 __pycache__/
 .env
 *.pem

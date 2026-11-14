@@ -23,7 +23,19 @@ POC8 raises the PCIe target from Gen1 x1 to Gen2 x1 (5 GT/s) and adds sysfs nego
 
 Windows/WSL2 step-by-step instructions and the live clean-build verification record: [新手乾淨建置操作手冊](docs/BEGINNER-CLEAN-BUILD.zh-TW.md). See its status table for completed versus pending stages.
 
-## Build on Linux / WSL2
+## Complete from-source SD workflow
+
+After installing Git, Python 3 and Docker on Ubuntu/WSL (uid 1000), read [the NXP firmware notice](bootloader/NXP-FIRMWARE-NOTICE.md). If you accept the applicable agreement:
+
+```sh
+bash tools/build-sd.sh --accept-nxp-eula
+```
+
+This builds pinned OpenWrt, SPL/U-Boot, TF-A and imx-mkimage, obtains hash-verified proprietary DDR firmware, and composes/checks the SD image in `output/from-zero`. No externally supplied boot blob is required. The board patch and original GPL DDR timing are in `bootloader/`; no proprietary firmware payloads are stored in Git. See [開機元件從零建置手冊](docs/BOOTLOADER-FROM-SOURCE.zh-TW.md) for consent, versions, outputs and tests. No storage device is flashed automatically.
+
+The component builds and both wrapper modes have passed offline checks in MYIR-Clean; the newly rebuilt boot blob differs from the old prebuilt artifact and needs board validation. Existing clean OpenWrt and hardware records remain historical evidence for their exact images.
+
+## Advanced: build OpenWrt only on Linux / WSL2
 
 Requirements: Git, Python 3, Docker, internet access and sufficient Linux build space. Do not build native OpenWrt in a Windows shell. Prefer a WSL ext4 work directory.
 
@@ -39,9 +51,9 @@ The builder runs as uid/gid 1000. Ensure your build directory is writable by tha
 
 The exported first-boot script deliberately excludes the deployed root password/hash. A rebuilt image uses upstream initial password behavior: set a new root password through a trusted local console before network use. Existing board images/passwords are not changed by this export. Wi-Fi starts disabled; no personal SSID/key is included.
 
-## Compose SD image
+## Advanced: compose with a supplied legacy boot image
 
-Provide the separately held `imx-boot-mys8mmx-v2-2025.04-poc1a.bin` in a private bootloader directory. Expected SHA256: `42c8e8c4b256fdc819b5b20c88569e40b69f8db72ff5c6bf92e4c31790e524c0`. This repository does not contain U-Boot/DDR training binaries or build their sources.
+Provide the separately held `imx-boot-mys8mmx-v2-2025.04-poc1a.bin` in a private bootloader directory. Expected SHA256: `42c8e8c4b256fdc819b5b20c88569e40b69f8db72ff5c6bf92e4c31790e524c0`. This optional legacy mode accepts only that tested prebuilt hash. The complete workflow above instead downloads/builds the pinned boot sources and verifies the generated artifact using its build provenance. Proprietary binaries remain excluded from Git.
 
 ```sh
 mkdir -p output

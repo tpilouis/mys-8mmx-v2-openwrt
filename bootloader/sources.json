@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "board": "MYIR MYS-8MMX-V2 V10",
+  "candidate": "poc1a",
+  "source_date_epoch": 1793875200,
+  "release_tag": "lf-6.12.49-2.2.0",
+  "sources": {
+    "u-boot": {
+      "url": "https://github.com/nxp-imx/uboot-imx.git",
+      "commit": "4ddbad60eff308a5b356fb9ab8734ac382ddd692"
+    },
+    "imx-atf": {
+      "url": "https://github.com/nxp-imx/imx-atf.git",
+      "commit": "a266ff458c2526a6474036a5c6648be6fdc54fe3"
+    },
+    "imx-mkimage": {
+      "url": "https://github.com/nxp-imx/imx-mkimage.git",
+      "commit": "be80fadd5e7988214149a2bc48daac1b0950d4c2"
+    }
+  },
+  "patch_sha256": "514b2762664581fb890ef2c8954bd32db68619f7c0baf8508af9994fac0d6c01",
+  "ddr_timing": {
+    "path": "board/myir/mys8mmx_v2/ddr4_timing.c",
+    "sha256": "d93343afc0b74b553ba4b3f210c40a945edc43ea75dac8ebca0864e8712ab8cd",
+    "license": "GPL-2.0-or-later",
+    "vendor_url": "https://github.com/MYiR-Dev/myir-imx-uboot",
+    "vendor_commit": "a4aee9ab38dfee05b95c8c9d99c989802572dc14",
+    "vendor_path": "board/myir/mys_iot_imx8mm/ddr4_timing.c"
+  },
+  "firmware": {
+    "url": "https://www.nxp.com/lgfiles/NMG/MAD/YOCTO/firmware-imx-8.7.bin",
+    "filename": "firmware-imx-8.7.bin",
+    "sha256": "92c1713f61a99b1ff5046a795789e6021db1e8bb5534c02e4b719f1436e15615",
+    "license": "LA_OPT_NXP_Software_License v11 February 2020",
+    "license_reference_url": "https://raw.githubusercontent.com/Freescale/meta-freescale/dunfell/EULA",
+    "license_sha256": "2ceab29de5ea533b86f570bcc4e9ddbfb5fe85a1da4978a8613ff3fd9bed781d",
+    "content_register_sha256": "15baa204ed75dcf0d03fa10596623a31cb7b158e40030e6bb34411e25fd01ffb",
+    "files": [
+      {
+        "name": "ddr4_imem_1d.bin",
+        "sha256": "071144dc32deefb78c40f46d0d4178c9bac731746816d8fb48e691b2a4901e5d",
+        "archive_path": "./firmware-imx-8.7/firmware/ddr/synopsys/ddr4_imem_1d.bin",
+        "bytes": 32768
+      },
+      {
+        "name": "ddr4_dmem_1d.bin",
+        "sha256": "576f526df5a0b5b84a6179483a16065db4306bf8c5e053fffd52d6237d6b550e",
+        "archive_path": "./firmware-imx-8.7/firmware/ddr/synopsys/ddr4_dmem_1d.bin",
+        "bytes": 16384
+      },
+      {
+        "name": "ddr4_imem_2d.bin",
+        "sha256": "dfa2ebfced43f345ec90c6ce3ae668820788dfa2422e2765ff0f890b2e301db9",
+        "archive_path": "./firmware-imx-8.7/firmware/ddr/synopsys/ddr4_imem_2d.bin",
+        "bytes": 23772
+      },
+      {
+        "name": "ddr4_dmem_2d.bin",
+        "sha256": "8850c2a43648617ff1d01f57c15e29e5bcaa32e19fe01e0153d35e466d58b84f",
+        "archive_path": "./firmware-imx-8.7/firmware/ddr/synopsys/ddr4_dmem_2d.bin",
+        "bytes": 1436
+      }
+    ]
+  }
+}

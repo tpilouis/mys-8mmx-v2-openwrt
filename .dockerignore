@@ -1,0 +1,14 @@
+.git
+.work
+output
+private
+downloads
+dl
+build_dir
+staging_dir
+__pycache__
+*.bin
+*.img
+*.img.gz
+*.vhdx
+*.log
