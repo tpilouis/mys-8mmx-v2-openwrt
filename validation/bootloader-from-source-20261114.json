@@ -37,7 +37,7 @@
     "ddr_training_and_2gib": "passed in supplied SPL/U-Boot output",
     "sd_ext4_root_mount": "passed; no ext4 corruption shown",
     "ethernet": "100Mbps full-duplex link; br-lan IPv4 192.168.50.70/24 observed; DHCP lease exchange not included in log",
-    "pcie_nvme": "Passed enumeration after user inserted SSD and rebooted: PCIe Gen2 x1 (5.0 GT/s), endpoint 1d79:2263, nvme0n1 partitions p1/p2; file I/O pending for this image",
+    "pcie_nvme": "PASS: PCIe Gen2 x1 (5.0 GT/s), nvme0n1 p1/p2 enumerated; user mounted p1 read-only, hashed kernel8.img and unmounted successfully. SHA256 55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca matches previous Gen1/Gen2 read tests. Writes, throughput and endurance untested.",
     "usb": "controllers/hub enumerated; device I/O not confirmed",
     "wifi": "generic firmware loaded; AP/client not tested",
     "rtc": "invalid time reported",
