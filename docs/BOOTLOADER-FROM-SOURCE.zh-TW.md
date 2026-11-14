@@ -2,7 +2,7 @@
 
 更新：2026-11-14。適用 MYS-8MMX-V2 V10／POC8。這個流程取得所需元件、編譯開源部分，並下載 NXP 專有 DDR 訓練韌體；不代表專有韌體也有公開原始碼。
 
-本機已完成整合與離線測試，尚未推送 GitHub。新開機檔與 SD 映像已由使用者確認進入 OpenWrt shell，PCIe Gen2 x1／NVMe 唯讀雜湊測試通過；冷開機與重新啟動各 10 次全部通過，其他周邊與長時間壓力測試仍待驗證。先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
+本機已完成整合與離線測試，尚未推送 GitHub。新開機檔與 SD 映像已由使用者確認進入 OpenWrt shell，PCIe Gen2 x1／NVMe 唯讀雜湊測試通過；冷開機與重新啟動各 10 次全部通過，本輪基本周邊回歸已完成，長時間壓力測試仍待驗證。先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
 
 ## 1. PC 環境
 
@@ -171,7 +171,7 @@ MYIR_TEST_BOOTLOADER_DIR="$PWD/output/bootloader" \
 - 本次開機工作目錄及 DDR 下載快取原先不存在；已重新下載三個 Git 專案與 NXP 官方套件，沒有取用 MYIR-Dev 的開機二進位檔／來源快取。
 - 新 SPL／U-Boot／TF-A／imx-mkimage 編譯、DDR 與封裝結構檢查通過。
 - 整合入口的略過 OpenWrt 模式、預設完整模式與最終 SD 靜態檢查皆已執行通過。預設模式中的 OpenWrt 部分重用本次 MYIR-Clean 自行建立的快取；並未為這次整合再次安裝整個 WSL。
-- 新開機檔 SHA256 與舊 POC1a 不同；**新映像已確認開機至 OpenWrt shell，PCIe Gen2 x1 與 NVMe 唯讀測試通過；冷開機及重新啟動各 10 次通過，其他周邊與長時間壓力測試仍待確認**。先前已測試的映像會保留。
+- 新開機檔 SHA256 與舊 POC1a 不同；**新映像已確認開機至 OpenWrt shell，PCIe Gen2 x1 與 NVMe 唯讀測試通過；冷開機及重新啟動各 10 次通過，基本周邊回歸亦已完成，長時間壓力測試仍待確認**。先前已測試的映像會保留。
 
 ## 9. 實板操作
 
@@ -194,7 +194,10 @@ MYIR_TEST_BOOTLOADER_DIR="$PWD/output/bootloader" \
 | PCIe／NVMe | 插入 SSD 後 Gen2 x1（5.0 GT/s）連線，辨識 nvme0n1 與 p1／p2 |
 | SSD 唯讀 | FAT 掛載、kernel8.img 全檔 SHA256、卸載通過；與先前測試相同 |
 | Ethernet | 100Mbps 全雙工，br-lan 顯示 192.168.50.70/24；未附 DHCP 租約交換記錄 |
-| USB／Wi-Fi／RTC | 尚未完成此新映像的功能重測；RTC 顯示時間無效 |
+| USB | USB-A 與 Type-C Host FAT32 唯讀掛載、同檔 SHA256 一致、卸載通過 |
+| Wi-Fi | 2.4 GHz channel 6 HT20 AP 認證／關聯及手機登入 LuCI 通過；手機租約明細未提供 |
+| RTC | RX8025T 寫入 exit=0、讀取與 5 秒走時通過；無電池，斷電保持未測 |
+| SSH／LuCI | SSH 密碼登入、HTTPS LuCI 總覽／介面／無線頁面通過 |
 | 重複開機 | 使用者回報新映像冷開機 10/10、重新啟動 10/10，全數 PASS |
 | 長時間壓力 | 尚未測試；早先單次重啟是否手動操作仍未釐清，不影響本次 20 次測試結果的紀錄 |
 
@@ -216,3 +219,5 @@ umount /mnt/nvme
 這是該 SSD 上既有檔案的測試值，不是要求其他 SSD 也具備此檔案；它證明本次讀取結果與先前一致，沒有驗證寫入、效能或耐久性。未插 SSD 時 PCIe 不建立連線，不能單憑此訊息判定移植失敗。
 
 新映像初始 root 密碼尚未設定，請先在可信任的串口執行 `passwd`。完整機器可讀紀錄見 [本次驗證紀錄](../validation/bootloader-from-source-20261114.json)。
+
+本輪結果以使用者提供的輸出及截圖為依據，更新見 [硬體驗證紀錄](HARDWARE-STATUS.md)。儲存裝置寫入／效能、Wi-Fi 5 GHz／Client、RTC 電池保持與長時間壓力未包含在本輪 PASS 中。

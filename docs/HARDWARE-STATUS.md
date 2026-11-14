@@ -73,3 +73,7 @@ User output confirms 2.4GHz channel 6 HT20 AP startup and a station with authori
 ### Rebuilt boot chain: phone LuCI access during AP test
 
 Following the authorized AP station output, the user supplied a phone screenshot of authenticated LuCI overview at 192.168.50.138. This supports Wi-Fi AP basic management access PASS in the test sequence. Exact phone address/DHCP lease was not supplied; no separate DHCP lease evidence is claimed. RTC read/write/ticking remains pending for this new image.
+
+### Rebuilt boot chain: RTC regression and basic test completion
+
+User output confirms rtc-rx8025t 1-0032, UTC write exit=0 and successful reads at 2026-11-14 11:38:42 and 11:38:47 separated by sleep 5. RTC read/write/ticking PASS. Battery is absent; power-off retention remains untested. The new image now has reported cold boot 10/10 and reboot 10/10, wired DHCP, SSH, LuCI pages, 2.4GHz AP association/phone management access, USB-A/Type-C read-only tests and PCIe Gen2 x1 NVMe read-only tests. This does not cover long-duration stress, storage writes/performance, 5GHz/client Wi-Fi or battery retention.

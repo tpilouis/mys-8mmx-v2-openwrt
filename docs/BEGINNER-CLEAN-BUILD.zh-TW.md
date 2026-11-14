@@ -427,3 +427,7 @@ docker run --rm \
 ### 新映像重複開機驗證
 
 使用者回報本次從原始碼重建開機鏈的新映像：冷開機 10 次、重新啟動 10 次，全部 PASS。此結果不延伸為長時間壓力、記憶體或所有周邊回歸測試通過。
+
+### 新映像基本周邊回歸完成
+
+使用者提供輸出／截圖確認：有線 DHCP、SSH、HTTPS LuCI 頁面、2.4 GHz AP 認證與手機管理介面存取、USB-A／Type-C Host FAT32 唯讀與一致雜湊、NVMe Gen2 x1 唯讀、RTC 寫入／讀取及 5 秒走時通過。冷開機與重新啟動各 10 次通過。RTC 無電池，斷電保持未測；長時間壓力、儲存寫入／效能、5 GHz／Client Wi-Fi 亦未測。詳細範圍見 validation/bootloader-from-source-20261114.json。
