@@ -69,3 +69,7 @@ User output confirms the same 32GB media on usb 1-1 via Type-C OTG adapter, sdb1
 ### Rebuilt boot chain: Wi-Fi AP association
 
 User output confirms 2.4GHz channel 6 HT20 AP startup and a station with authorized/authenticated/associated yes, bidirectional packet counters and tx failed=0. AP authentication/association PASS. Reported 65.0 MBit/s is a PHY TX rate, not measured throughput. Phone DHCP and LuCI access over Wi-Fi remain to be confirmed; 5GHz/client/endurance remain untested and the known CLM warning persists. No Wi-Fi credentials are stored in this record.
+
+### Rebuilt boot chain: phone LuCI access during AP test
+
+Following the authorized AP station output, the user supplied a phone screenshot of authenticated LuCI overview at 192.168.50.138. This supports Wi-Fi AP basic management access PASS in the test sequence. Exact phone address/DHCP lease was not supplied; no separate DHCP lease evidence is claimed. RTC read/write/ticking remains pending for this new image.
