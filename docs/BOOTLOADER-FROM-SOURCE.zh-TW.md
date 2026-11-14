@@ -1,5 +1,7 @@
 # 從原始碼建立 SPL／U-Boot／TF-A 與完整 SD 映像
 
+[English](BOOTLOADER-FROM-SOURCE.en.md)
+
 更新：2026-11-14。適用 MYS-8MMX-V2 V10／POC8。這個流程取得所需元件、編譯開源部分，並下載 NXP 專有 DDR 訓練韌體；不代表專有韌體也有公開原始碼。
 
 本機已完成整合與離線測試，尚未推送 GitHub。新開機檔與 SD 映像已由使用者確認進入 OpenWrt shell，PCIe Gen2 x1／NVMe 唯讀雜湊測試通過；冷開機與重新啟動各 10 次全部通過，本輪基本周邊回歸已完成，長時間壓力測試仍待驗證。先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
@@ -193,7 +195,7 @@ MYIR_TEST_BOOTLOADER_DIR="$PWD/output/bootloader" \
 | 根檔案系統 | EXT4 掛載成功，進入 OpenWrt 25.12.6 shell |
 | PCIe／NVMe | 插入 SSD 後 Gen2 x1（5.0 GT/s）連線，辨識 nvme0n1 與 p1／p2 |
 | SSD 唯讀 | FAT 掛載、kernel8.img 全檔 SHA256、卸載通過；與先前測試相同 |
-| Ethernet | 100Mbps 全雙工，br-lan 顯示 192.168.50.70/24；未附 DHCP 租約交換記錄 |
+| Ethernet | 100Mbps 全雙工；後續 LuCI 截圖確認 LAN DHCP Client，位址為 192.168.50.138/24 |
 | USB | USB-A 與 Type-C Host FAT32 唯讀掛載、同檔 SHA256 一致、卸載通過 |
 | Wi-Fi | 2.4 GHz channel 6 HT20 AP 認證／關聯及手機登入 LuCI 通過；手機租約明細未提供 |
 | RTC | RX8025T 寫入 exit=0、讀取與 5 秒走時通過；無電池，斷電保持未測 |
@@ -218,6 +220,6 @@ umount /mnt/nvme
 
 這是該 SSD 上既有檔案的測試值，不是要求其他 SSD 也具備此檔案；它證明本次讀取結果與先前一致，沒有驗證寫入、效能或耐久性。未插 SSD 時 PCIe 不建立連線，不能單憑此訊息判定移植失敗。
 
-新映像初始 root 密碼尚未設定，請先在可信任的串口執行 `passwd`。完整機器可讀紀錄見 [本次驗證紀錄](../validation/bootloader-from-source-20261114.json)。
+新映像預設不含 root 密碼，請先在可信任的串口執行 `passwd`。本次使用者已設定密碼並完成 SSH／LuCI 測試，紀錄不保存密碼或雜湊。完整機器可讀紀錄見 [本次驗證紀錄](../validation/bootloader-from-source-20261114.json)。
 
 本輪結果以使用者提供的輸出及截圖為依據，更新見 [硬體驗證紀錄](HARDWARE-STATUS.md)。儲存裝置寫入／效能、Wi-Fi 5 GHz／Client、RTC 電池保持與長時間壓力未包含在本輪 PASS 中。
