@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-14",
+  "status": "passed_with_local_recipe_fix",
+  "distro": "MYIR-Clean",
+  "host_os": "Ubuntu 24.04.5 LTS amd64",
+  "wsl_version": "3.0.5",
+  "docker_version": "29.9.3",
+  "builder_image_id": "sha256:56c9860ea34e91eca3f49e2e458dbc3e703612013910af90ad52d9fdb13312b3",
+  "project_base_commit": "68ac78128c6b8fe1d0e32a59bfb027f94fb34aa4",
+  "openwrt_commit": "71dbef3fd854850a810c93416c16d32d3fc82734",
+  "initial_docker_images": 0,
+  "old_build_caches_reused": false,
+  "local_fix": "Restore pinned myir-diffconfig after feeds installation, before defconfig",
+  "build_script_sha256": "9f13f0da5ca4f12aa097758a93ef0c9a6ca851428a6d4e5c07fbff160bf22c5c",
+  "first_attempt": "Exited 1 before package/source compilation: luci-ssl lost during first feeds initialization",
+  "retry_container": "myir-clean-poc8-build-retry1",
+  "retry_exit_code": 0,
+  "firmware_build": "passed",
+  "static_checks": [
+    "ARM64 kernel header",
+    "DTB/peripheral/NVMe config",
+    "FAT consistency",
+    "EXT4 consistency",
+    "final-image partition readback",
+    "913 regular rootfs files equal generated rootfs tar archive",
+    "gzip roundtrip",
+    "export SHA256"
+  ],
+  "source_preparation": "Fresh clone, firmware downloads and OpenWrt/feeds downloads; no old source/toolchain/dl mounted",
+  "bootloader_rebuilt": false,
+  "external_bootloader": {
+    "name": "imx-boot-mys8mmx-v2-2025.04-poc1a.bin",
+    "sha256": "42c8e8c4b256fdc819b5b20c88569e40b69f8db72ff5c6bf92e4c31790e524c0",
+    "origin": "Existing separately held POC1a artifact supplied as explicit external input"
+  },
+  "image": {
+    "name": "openwrt-25.12.6-mys-8mmx-v2-sd-nvme-poc8.img.gz",
+    "bytes": 15472212,
+    "sha256": "b9f8525e4f4e2d4d1f853d4fccf5e82a055fd0f7227cccadbecab87a45c88e6b"
+  },
+  "credentials": "Exported overlay excludes deployed root password/hash; set a root password before network use",
+  "services_emulation": "not run for this new image; legacy private-fixture harness is not portable",
+  "hardware_test": false,
+  "github_pushed": false,
+  "comparison_to_previous_poc8": {
+    "Image": {
+      "clean_sha256": "6e0d532c91f28c19d9df4e50d6f2ae55d89fe840d8d5c8c6976178d49b5a2e0c",
+      "previous_sha256": "5540f191b4f7c63cfed058a2385702b39efe0b01f77031410adb173f587fa0e3",
+      "equal": false,
+      "equal_after_container_hostname_normalization": false,
+      "kernel_config_equal": true,
+      "equal_after_hostname_and_gnu_build_id_normalization": true
+    },
+    "imx8mm-mys-8mmx-v2.dtb": {
+      "clean_sha256": "ccf0d7b2223917fe73579804b1091a40fe12e9a222b26a58817dc7a90899a1a0",
+      "previous_sha256": "ccf0d7b2223917fe73579804b1091a40fe12e9a222b26a58817dc7a90899a1a0",
+      "equal": true
+    }
+  }
+}

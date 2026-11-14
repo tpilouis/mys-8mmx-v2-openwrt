@@ -19,6 +19,10 @@ POC8 raises the PCIe target from Gen1 x1 to Gen2 x1 (5 GT/s) and adds sysfs nego
 
 `patches/myir.patch` applies to the pinned OpenWrt commit. `overlay/` contains runtime files, `configs/` build/feeds pins, `tools/` original build and verification scripts plus a portable source-preparation script, and `validation/` historical local artifact reports. Reports describe the original local builds; they are not evidence that a build made from this export has passed those tests. Image checksums in the reports reference artifacts intentionally excluded from Git.
 
+## Beginner guide
+
+Windows/WSL2 step-by-step instructions and the live clean-build verification record: [新手乾淨建置操作手冊](docs/BEGINNER-CLEAN-BUILD.zh-TW.md). See its status table for completed versus pending stages.
+
 ## Build on Linux / WSL2
 
 Requirements: Git, Python 3, Docker, internet access and sufficient Linux build space. Do not build native OpenWrt in a Windows shell. Prefer a WSL ext4 work directory.
