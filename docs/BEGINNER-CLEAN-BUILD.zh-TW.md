@@ -349,7 +349,7 @@ docker run --rm \
 | 全新 Docker 編譯映像 | 已完成，從 Docker Hub 與套件站全新建立 |
 | 完整 make | 通過：修正 LuCI 設定順序後，從全新來源建立主機工具、GCC 14.3.0、核心與套件，容器退出碼 0 |
 | 完整 SD 封裝／離線驗證 | 通過：EXT4／FAT、分割區回讀、913 個一般檔案與 tar 比對、gzip、SHA256 |
-| 本次新映像實板測試 | 2026-11-14 使用者回報：燒錄 SD 後開機 PASS；其他功能未回報重測 |
+| 本次新映像實板測試 | 2026-11-14 使用者回報：SD 開機與 DHCP Client PASS；其他功能未回報重測 |
 
 本次記錄位置：`D:\MYIR-Clean\logs`。產物已另複製至 `D:\MYIR-Clean\output`，其中 `clean-build-report.json` 記錄來源、修正、校驗與外部開機檔。密碼／Token 不應出現在日誌、Git 或截圖。
 
@@ -393,3 +393,7 @@ docker run --rm \
 ### 2026-11-14 實板開機結果
 
 使用者將本次乾淨建置的映像燒錄至 SD 卡，回報開機測試 PASS。至此已完成「新環境下載來源＋本次設定順序修正＋完整 make＋外部 POC1a 開機檔封裝＋SD 實板開機」流程。這不代表 NXP 開機鏈已從頭重建，也不代表本次映像的網路、SSH／LuCI、Wi-Fi、USB、RTC、NVMe 與長時間穩定性已全部重測。
+
+### 2026-11-14 DHCP Client 結果
+
+使用者回報本次乾淨建置映像 DHCP Client 測試 PASS。已確認項目為 SD 開機及 DHCP Client；SSH／LuCI、Wi-Fi、USB、RTC、NVMe 與長時間穩定性尚未回報本次映像的重測結果。

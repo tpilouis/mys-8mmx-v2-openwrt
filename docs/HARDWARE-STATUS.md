@@ -31,3 +31,5 @@ PASS: Gen2 x1 negotiation, NVMe/partition detection, FAT32 read-only mount, comp
 ## Clean-build SD boot — 2026-11-14
 
 User reports SD flashing and successful board boot for the MYIR-Clean rebuilt POC8 image (SHA256 b9f8525e4f4e2d4d1f853d4fccf5e82a055fd0f7227cccadbecab87a45c88e6b). Fresh source/toolchain build needed the documented feeds configuration reseed fix and used the separately supplied POC1a boot blob. Peripheral/network regression and endurance results were not supplied for this new image.
+
+Clean-image follow-up, 2026-11-14: user reports DHCP client test PASS. SD boot and DHCP client validated; SSH/LuCI and peripheral regression remain unreported for this image.

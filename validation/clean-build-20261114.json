@@ -59,10 +59,11 @@
   },
   "hardware_validation": {
     "date": "2026-11-14",
-    "method": "User-reported SD flashing and board boot test",
+    "method": "User-reported SD boot and DHCP client tests",
     "sd_boot": "passed",
-    "network_ssh_luci": "not reported for this clean image",
     "wifi_usb_rtc_nvme": "not reported for this clean image",
-    "endurance": "not tested"
+    "endurance": "not tested",
+    "dhcp_client": "passed",
+    "ssh_luci": "not reported for this clean image"
   }
 }
