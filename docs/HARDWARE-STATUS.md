@@ -57,3 +57,7 @@ User screenshot confirms authenticated LuCI system overview with Log out menu, c
 ### Rebuilt boot chain: LuCI network pages and DHCP
 
 User screenshots confirm Wireless and Interfaces pages render. Wireless lists radio0 but no active interface/station, so Wi-Fi functional test remains pending. Interfaces confirms lan DHCP client, carrier present, IPv4 192.168.50.138/24 and traffic counters: wired DHCP client PASS. The unused wwan has no device; this does not establish a radio failure.
+
+### Rebuilt boot chain: USB-A read-only test
+
+User output confirms USB storage on usb 2-1.1 behind the onboard hub, 32GB media with FAT32 bootfs at sdb1, read-only mount/list, full kernel8.img read (SHA256 49435997b1f076913dfe911ed5f8b27649876967c138969419abc6550790cdc6, read_exit=0) and unmount (exit=0). USB-A read test PASS. This is a different file version from the earlier NVMe test; no independent reference checksum comparison is claimed. Type-C and write/performance/endurance tests remain pending for this exact image.
