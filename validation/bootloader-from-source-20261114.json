@@ -42,7 +42,18 @@
     "wifi": "generic firmware loaded; AP/client not tested",
     "rtc": "invalid time reported",
     "earlier_restart": "unresolved: user has not confirmed manual power cycle versus automatic reset",
-    "stability_and_stress": "not tested",
-    "root_password": "unset in supplied log; configure passwd before network use"
+    "stability_and_stress": "Cold boot 10/10 and reboot 10/10 PASS, user reported. Long-duration stress and memory tests not performed for this exact image.",
+    "root_password": "unset in supplied log; configure passwd before network use",
+    "repeated_boot_tests": {
+      "method": "User reported tests of the new image",
+      "cold_boot": {
+        "attempts": 10,
+        "passed": 10
+      },
+      "reboot": {
+        "attempts": 10,
+        "passed": 10
+      }
+    }
   }
 }

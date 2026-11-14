@@ -41,3 +41,7 @@ Clean-image follow-up, 2026-11-14: user reports USB and SSD tests PASS. Port, sp
 User confirmed rebuilt boot SHA256 prefix 53ad61e8 and provided SPL/U-Boot/kernel logs. DDR calibration completed, 2 GiB detected, SD kernel/DTB loaded, Linux 6.12.113 mounted SD ext4 root and reached the OpenWrt root shell. Basic end-to-end boot PASS.
 
 Limits: an earlier restart after boot.scr is still unexplained (manual power cycle vs automatic reset not confirmed); repeated-boot stability is not validated. PCIe reports PHY link never came up and no NVMe endpoint; whether an SSD was inserted is unknown. Ethernet 100Mbps link and USB hub initialization were observed, not DHCP/device I/O tests. Wi-Fi generic firmware loaded with known CLM warning; RTC time invalid. These do not inherit prior images' peripheral PASS results. Root password was unset; set it locally before network use.
+
+### Rebuilt boot chain: subsequent hardware validation (2026-11-14)
+
+After inserting the SSD, the user supplied a successful Gen2 x1 (5.0 GT/s) boot with nvme0n1 p1/p2 enumeration. Read-only FAT mount, complete kernel8.img checksum and unmount passed; SHA256 55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca matches previous reads. The user then reported 10/10 cold boots and 10/10 reboots passing for this new image. This supersedes the pending repeated-boot and SSD checks above; the cause of the earlier individual restart remains unknown. Long-duration stress, memory and other peripheral regression tests are not established by this report.
