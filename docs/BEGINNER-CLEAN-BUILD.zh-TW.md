@@ -349,7 +349,7 @@ docker run --rm \
 | 全新 Docker 編譯映像 | 已完成，從 Docker Hub 與套件站全新建立 |
 | 完整 make | 通過：修正 LuCI 設定順序後，從全新來源建立主機工具、GCC 14.3.0、核心與套件，容器退出碼 0 |
 | 完整 SD 封裝／離線驗證 | 通過：EXT4／FAT、分割區回讀、913 個一般檔案與 tar 比對、gzip、SHA256 |
-| 本次新映像實板測試 | 2026-11-14 使用者回報：SD 開機與 DHCP Client PASS；其他功能未回報重測 |
+| 本次新映像實板測試 | 2026-11-14 使用者回報：SD 開機、DHCP Client、USB、SSD PASS；其餘未回報重測 |
 
 本次記錄位置：`D:\MYIR-Clean\logs`。產物已另複製至 `D:\MYIR-Clean\output`，其中 `clean-build-report.json` 記錄來源、修正、校驗與外部開機檔。密碼／Token 不應出現在日誌、Git 或截圖。
 
@@ -397,3 +397,7 @@ docker run --rm \
 ### 2026-11-14 DHCP Client 結果
 
 使用者回報本次乾淨建置映像 DHCP Client 測試 PASS。已確認項目為 SD 開機及 DHCP Client；SSH／LuCI、Wi-Fi、USB、RTC、NVMe 與長時間穩定性尚未回報本次映像的重測結果。
+
+### 2026-11-14 USB／SSD 結果
+
+使用者回報本次乾淨建置映像 USB／SSD 測試 PASS，未另提供端口、協商速度、讀寫方式、雜湊或效能數據。因此僅記錄本次功能測試通過，不延伸為所有 USB 端口、Gen2 速度、寫入、效能或耐久性驗證。累計已確認 SD 開機、DHCP Client、USB、SSD；SSH／LuCI、Wi-Fi、RTC 尚未回報本次映像的重測結果。

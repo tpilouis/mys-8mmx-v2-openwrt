@@ -59,11 +59,13 @@
   },
   "hardware_validation": {
     "date": "2026-11-14",
-    "method": "User-reported SD boot and DHCP client tests",
+    "method": "User-reported SD boot, DHCP client, USB and SSD tests",
     "sd_boot": "passed",
-    "wifi_usb_rtc_nvme": "not reported for this clean image",
     "endurance": "not tested",
     "dhcp_client": "passed",
-    "ssh_luci": "not reported for this clean image"
+    "ssh_luci": "not reported for this clean image",
+    "usb": "passed (user report; port, procedure and I/O details not supplied)",
+    "ssd": "passed (user report; negotiated speed and I/O details not supplied)",
+    "wifi_rtc": "not reported for this clean image"
   }
 }
