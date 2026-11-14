@@ -262,7 +262,7 @@ ls -lh .work/openwrt/bin/targets/imx/cortexa53/
 
 ## 8A. 建議：完整開機元件與 SD 建置入口
 
-本機版本已新增從原始碼建立 SPL／U-Boot／TF-A／imx-mkimage 的流程，尚未推送 GitHub。新手可在第 5 章取得包含新腳本的專案版本後，閱讀 [開機元件從零建置手冊](BOOTLOADER-FROM-SOURCE.zh-TW.md) 與 NXP 授權說明，再執行：
+專案已新增從原始碼建立 SPL／U-Boot／TF-A／imx-mkimage 的流程。新手可在第 5 章取得包含新腳本的專案版本後，閱讀 [開機元件從零建置手冊](BOOTLOADER-FROM-SOURCE.zh-TW.md) 與 NXP 授權說明，再執行：
 
 ```bash
 bash tools/build-sd.sh --accept-nxp-eula

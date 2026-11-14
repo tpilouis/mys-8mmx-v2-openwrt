@@ -6,7 +6,7 @@ Updated: 2026-11-14. Applies to the MYS-8MMX-V2, PCB V10, POC8.
 
 This workflow downloads the required components, compiles the open-source components and obtains proprietary NXP DDR training firmware. The proprietary firmware is not supplied as open source.
 
-Integration and offline checks have passed locally; these changes have not yet been pushed to GitHub. The rebuilt boot image reaches the OpenWrt shell. PCIe Gen2 x1 / NVMe read tests, 10 cold boots, 10 reboots and basic peripheral regression tests have passed. Long-duration stress testing remains pending. Results from the earlier clean image using an externally supplied POC1a boot file do not automatically apply to this rebuilt image.
+Integration and offline checks have passed locally. The rebuilt boot image reaches the OpenWrt shell. PCIe Gen2 x1 / NVMe read tests, 10 cold boots, 10 reboots and basic peripheral regression tests have passed. Long-duration stress testing remains pending. Results from the earlier clean image using an externally supplied POC1a boot file do not automatically apply to this rebuilt image.
 
 ## 1. Prepare the host PC
 
@@ -71,7 +71,7 @@ docker info
 ls tools/build-sd.sh bootloader/sources.json
 ```
 
-`id -u` should return `1000`, and Docker must be accessible. On another PC, substitute your own WSL distribution name and clone directory. If a script is missing, check that your checkout includes this bootloader workflow. At the time of this record, the local changes have not been pushed; the older GitHub revision cannot run the new workflow.
+`id -u` should return `1000`, and Docker must be accessible. On another PC, substitute your own WSL distribution name and clone directory. If a script is missing, check that your checkout includes this bootloader workflow. Use a repository revision containing tools/build-sd.sh; older revisions do not include this workflow.
 
 For a first build, use the complete command in section 3. The existing MYIR-Clean environment, where OpenWrt has already been built, can use `--skip-openwrt`. This still prepares and builds the boot components, recomposes the SD image and runs checks; it does not merely copy an old boot file.
 
