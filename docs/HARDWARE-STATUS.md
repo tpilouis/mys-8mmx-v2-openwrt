@@ -53,3 +53,7 @@ The user set a root password and successfully logged in from Windows PowerShell 
 ### Rebuilt boot chain: LuCI overview
 
 User screenshot confirms authenticated LuCI system overview with Log out menu, correct MYIR POC8 model, OpenWrt 25.12.6 r0-71dbef3, Linux 6.12.113 and live system statistics. Browser URL uses HTTPS. Login and overview PASS; interface/wireless configuration pages and Wi-Fi functionality remain unconfirmed by this screenshot.
+
+### Rebuilt boot chain: LuCI network pages and DHCP
+
+User screenshots confirm Wireless and Interfaces pages render. Wireless lists radio0 but no active interface/station, so Wi-Fi functional test remains pending. Interfaces confirms lan DHCP client, carrier present, IPv4 192.168.50.138/24 and traffic counters: wired DHCP client PASS. The unused wwan has no device; this does not establish a radio failure.

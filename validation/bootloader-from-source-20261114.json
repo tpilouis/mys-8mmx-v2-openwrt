@@ -36,7 +36,7 @@
     "boot_chain_to_openwrt_shell": "passed",
     "ddr_training_and_2gib": "passed in supplied SPL/U-Boot output",
     "sd_ext4_root_mount": "passed; no ext4 corruption shown",
-    "ethernet": "100Mbps full-duplex link; br-lan IPv4 192.168.50.70/24 observed; DHCP lease exchange not included in log",
+    "ethernet": "PASS: 100Mbps full-duplex link in serial log; user LuCI Interfaces screenshot confirms lan DHCP client, carrier present, IPv4 192.168.50.138/24 and traffic counters.",
     "pcie_nvme": "PASS: PCIe Gen2 x1 (5.0 GT/s), nvme0n1 p1/p2 enumerated; user mounted p1 read-only, hashed kernel8.img and unmounted successfully. SHA256 55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca matches previous Gen1/Gen2 read tests. Writes, throughput and endurance untested.",
     "usb": "controllers/hub enumerated; device I/O not confirmed",
     "wifi": "generic firmware loaded; AP/client not tested",
@@ -56,6 +56,6 @@
       }
     },
     "ssh": "PASS: user supplied Windows PowerShell OpenSSH password login transcript to 192.168.50.138 reaching OpenWrt 25.12.6 r0-71dbef3 root shell.",
-    "luci": "PASS for authenticated system overview: user screenshot shows Log out, MYIR POC8 model, OpenWrt 25.12.6 r0-71dbef3, Linux 6.12.113, live uptime/memory/storage. HTTPS URL observed in browser context. Interface and wireless pages not yet confirmed."
+    "luci": "PASS: HTTPS authenticated overview, Interfaces and Wireless pages rendered in user screenshots. Wireless page detects radio0; no configured active wireless interface or station shown. wwan has no device, consistent with no active Wi-Fi client; AP/client functional test pending."
   }
 }
