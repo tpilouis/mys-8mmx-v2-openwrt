@@ -35,3 +35,9 @@ User reports SD flashing and successful board boot for the MYIR-Clean rebuilt PO
 Clean-image follow-up, 2026-11-14: user reports DHCP client test PASS. SD boot and DHCP client validated; SSH/LuCI and peripheral regression remain unreported for this image.
 
 Clean-image follow-up, 2026-11-14: user reports USB and SSD tests PASS. Port, speed, procedure, hashes and write/performance details were not supplied. This records functional pass only; it does not establish all-port coverage, Gen2 negotiation, write integrity or endurance for this image. SSH/LuCI, Wi-Fi and RTC regression remain unreported.
+
+## From-source boot chain board result — 2026-11-14
+
+User confirmed rebuilt boot SHA256 prefix 53ad61e8 and provided SPL/U-Boot/kernel logs. DDR calibration completed, 2 GiB detected, SD kernel/DTB loaded, Linux 6.12.113 mounted SD ext4 root and reached the OpenWrt root shell. Basic end-to-end boot PASS.
+
+Limits: an earlier restart after boot.scr is still unexplained (manual power cycle vs automatic reset not confirmed); repeated-boot stability is not validated. PCIe reports PHY link never came up and no NVMe endpoint; whether an SSD was inserted is unknown. Ethernet 100Mbps link and USB hub initialization were observed, not DHCP/device I/O tests. Wi-Fi generic firmware loaded with known CLM warning; RTC time invalid. These do not inherit prior images' peripheral PASS results. Root password was unset; set it locally before network use.

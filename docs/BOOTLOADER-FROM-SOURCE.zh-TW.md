@@ -2,7 +2,7 @@
 
 更新：2026-11-14。適用 MYS-8MMX-V2 V10／POC8。這個流程取得所需元件、編譯開源部分，並下載 NXP 專有 DDR 訓練韌體；不代表專有韌體也有公開原始碼。
 
-本機已完成整合與離線測試，尚未推送 GitHub。新生成的開機檔及 SD 候選映像尚需實板驗證；先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
+本機已完成整合與離線測試，尚未推送 GitHub。新開機檔與 SD 映像已由使用者確認進入 OpenWrt shell；周邊及重啟穩定性仍待驗證。先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
 
 ## 1. PC 環境
 
@@ -115,8 +115,11 @@ MYIR_TEST_BOOTLOADER_DIR="$PWD/output/bootloader" \
 - 本次開機工作目錄及 DDR 下載快取原先不存在；已重新下載三個 Git 專案與 NXP 官方套件，沒有取用 MYIR-Dev 的開機二進位檔／來源快取。
 - 新 SPL／U-Boot／TF-A／imx-mkimage 編譯、DDR 與封裝結構檢查通過。
 - 整合入口的略過 OpenWrt 模式、預設完整模式與最終 SD 靜態檢查皆已執行通過。預設模式中的 OpenWrt 部分重用本次 MYIR-Clean 自行建立的快取；並未為這次整合再次安裝整個 WSL。
-- 新開機檔 SHA256 與舊 POC1a 不同；**新映像實板開機及周邊測試仍待確認**。先前已測試的映像會保留。
+- 新開機檔 SHA256 與舊 POC1a 不同；**新映像已確認開機至 OpenWrt shell，周邊與穩定性仍待確認**。先前已測試的映像會保留。
 
 ## 9. 實板操作
 
 先備份設定，使用另一張 SD 卡，核對新映像 SHA256，啟用燒錄工具的寫入後驗證。板子斷電後換卡，上電保留完整串口文字，確認 SPL DDR calibration、U-Boot 2025.04、2 GiB DRAM、boot.scr 與 Linux 正常啟動，再測 DHCP／USB／SSD。不要先寫 eMMC、NOR 或 fuse。
+## 10. 新開機鏈實板結果
+
+2026-11-14 使用者確認新 boot SHA256 為 53ad61e8 開頭，並提供完整後續核心紀錄：DDR 校準完成、2 GiB、SD 讀取、EXT4 root 掛載及 OpenWrt shell 通過。早先 boot.scr 後的一次重啟原因仍待確認，不標記重啟穩定性通過。本次 PCIe 未連線，需先確認是否安裝 SSD；DHCP、USB／SSD I/O 與 Wi-Fi 尚未回報此新映像測試結果。開機顯示 root 尚未設密碼，請先在串口執行 `passwd`。

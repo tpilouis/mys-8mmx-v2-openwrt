@@ -27,7 +27,22 @@
     "compiled DTB/kernel module settings",
     "EXT4/FAT, partition readback, 913 rootfs files, gzip roundtrip"
   ],
-  "hardware_test": false,
+  "hardware_test": true,
   "github_pushed": false,
-  "license": "Explicit acceptance flag required; test uses same NXP v11 terms previously accepted in this session; proprietary payloads excluded from Git"
+  "license": "Explicit acceptance flag required; test uses same NXP v11 terms previously accepted in this session; proprietary payloads excluded from Git",
+  "hardware_validation": {
+    "date": "2026-11-14",
+    "method": "User confirmed rebuilt boot hash 53ad61e8 and supplied serial boot output",
+    "boot_chain_to_openwrt_shell": "passed",
+    "ddr_training_and_2gib": "passed in supplied SPL/U-Boot output",
+    "sd_ext4_root_mount": "passed; no ext4 corruption shown",
+    "ethernet": "100Mbps link observed; DHCP not confirmed for this image",
+    "pcie_nvme": "PHY link did not come up; SSD presence not yet confirmed",
+    "usb": "controllers/hub enumerated; device I/O not confirmed",
+    "wifi": "generic firmware loaded; AP/client not tested",
+    "rtc": "invalid time reported",
+    "earlier_restart": "unresolved: user has not confirmed manual power cycle versus automatic reset",
+    "stability_and_stress": "not tested",
+    "root_password": "unset in supplied log; configure passwd before network use"
+  }
 }
