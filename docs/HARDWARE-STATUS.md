@@ -65,3 +65,7 @@ User output confirms USB storage on usb 2-1.1 behind the onboard hub, 32GB media
 ### Rebuilt boot chain: Type-C Host read-only test
 
 User output confirms the same 32GB media on usb 1-1 via Type-C OTG adapter, sdb1 FAT32 read-only mount, complete kernel8.img SHA256 49435997b1f076913dfe911ed5f8b27649876967c138969419abc6550790cdc6, read_exit=0 and unmount_exit=0. Type-C fixed Host read test PASS; checksum matches the USB-A read of the same file. Both USB-A and Type-C read regression tests are now complete for this image. Writes, measured throughput, endurance and USB device/gadget mode remain untested.
+
+### Rebuilt boot chain: Wi-Fi AP association
+
+User output confirms 2.4GHz channel 6 HT20 AP startup and a station with authorized/authenticated/associated yes, bidirectional packet counters and tx failed=0. AP authentication/association PASS. Reported 65.0 MBit/s is a PHY TX rate, not measured throughput. Phone DHCP and LuCI access over Wi-Fi remain to be confirmed; 5GHz/client/endurance remain untested and the known CLM warning persists. No Wi-Fi credentials are stored in this record.
