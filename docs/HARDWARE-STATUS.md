@@ -49,3 +49,7 @@ After inserting the SSD, the user supplied a successful Gen2 x1 (5.0 GT/s) boot 
 ### Rebuilt boot chain: SSH login
 
 The user set a root password and successfully logged in from Windows PowerShell using SSH password authentication to the current board address 192.168.50.138, reaching the OpenWrt root shell. SSH login PASS; no password/hash retained. This does not establish LuCI login or other remaining peripheral tests.
+
+### Rebuilt boot chain: LuCI overview
+
+User screenshot confirms authenticated LuCI system overview with Log out menu, correct MYIR POC8 model, OpenWrt 25.12.6 r0-71dbef3, Linux 6.12.113 and live system statistics. Browser URL uses HTTPS. Login and overview PASS; interface/wireless configuration pages and Wi-Fi functionality remain unconfirmed by this screenshot.

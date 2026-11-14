@@ -55,6 +55,7 @@
         "passed": 10
       }
     },
-    "ssh": "PASS: user supplied Windows PowerShell OpenSSH password login transcript to 192.168.50.138 reaching OpenWrt 25.12.6 r0-71dbef3 root shell."
+    "ssh": "PASS: user supplied Windows PowerShell OpenSSH password login transcript to 192.168.50.138 reaching OpenWrt 25.12.6 r0-71dbef3 root shell.",
+    "luci": "PASS for authenticated system overview: user screenshot shows Log out, MYIR POC8 model, OpenWrt 25.12.6 r0-71dbef3, Linux 6.12.113, live uptime/memory/storage. HTTPS URL observed in browser context. Interface and wireless pages not yet confirmed."
   }
 }
