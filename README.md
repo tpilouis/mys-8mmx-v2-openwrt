@@ -6,7 +6,7 @@ Private board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB
 
 OpenWrt maintenance commit `71dbef3fd854850a810c93416c16d32d3fc82734`, Linux 6.12.113; feeds are pinned in `configs/feeds.conf`. The OpenWrt label remains 25.12.6 with local maintenance changes; this is not an official supported device image.
 
-- SD boot uses the separately built U-Boot 2025.04 MYIR POC1a blob and original vendor DDR timing.
+- SD boot uses U-Boot 2025.04 MYIR POC1a and original vendor DDR timing; the complete workflow below builds the boot chain from pinned sources.
 - Wired LAN DHCP client, SSH/LuCI, AP6256 Wi-Fi, RX8025T RTC, USB-A and fixed-Host USB Type-C.
 - POC6 Type-C read-only FAT mount and complete 35,373,568-byte Image read passed on board; SHA256 `7880ec0586b87ae7fc391373594a2cd871334154aad9b4c62e57dec79cf6c38f`; unmount passed.
 - RTC battery retention, NOR boot and USB write/endurance tests remain deferred.
@@ -33,7 +33,7 @@ bash tools/build-sd.sh --accept-nxp-eula
 
 This builds pinned OpenWrt, SPL/U-Boot, TF-A and imx-mkimage, obtains hash-verified proprietary DDR firmware, and composes/checks the SD image in `output/from-zero`. No externally supplied boot blob is required. The board patch and original GPL DDR timing are in `bootloader/`; no proprietary firmware payloads are stored in Git. See [開機元件從零建置手冊](docs/BOOTLOADER-FROM-SOURCE.zh-TW.md) for consent, versions, outputs and tests. No storage device is flashed automatically.
 
-The component builds and both wrapper modes have passed offline checks in MYIR-Clean; the newly rebuilt boot blob differs from the old prebuilt artifact and needs board validation. Existing clean OpenWrt and hardware records remain historical evidence for their exact images.
+The component builds and both wrapper modes have passed offline checks in MYIR-Clean; the newly rebuilt boot blob differs from the old prebuilt artifact. On 2026-11-14 it reached the OpenWrt shell and passed PCIe Gen2 x1 / NVMe read-only mount, file checksum and unmount testing. Other peripheral and repeated-reset tests remain pending for this exact image. Existing clean OpenWrt and hardware records remain historical evidence for their exact images.
 
 ## Advanced: build OpenWrt only on Linux / WSL2
 

@@ -2,7 +2,7 @@
 
 更新：2026-11-14。適用 MYS-8MMX-V2 V10／POC8。這個流程取得所需元件、編譯開源部分，並下載 NXP 專有 DDR 訓練韌體；不代表專有韌體也有公開原始碼。
 
-本機已完成整合與離線測試，尚未推送 GitHub。新開機檔與 SD 映像已由使用者確認進入 OpenWrt shell；周邊及重啟穩定性仍待驗證。先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
+本機已完成整合與離線測試，尚未推送 GitHub。新開機檔與 SD 映像已由使用者確認進入 OpenWrt shell，PCIe Gen2 x1／NVMe 唯讀雜湊測試通過；其他周邊及重啟穩定性仍待驗證。先前使用外部 POC1a 檔的乾淨映像測試結果不能直接移作這個新映像的測試結果。
 
 ## 1. PC 環境
 
@@ -50,6 +50,62 @@ bash tools/build-sd.sh --accept-nxp-eula --skip-openwrt
 
 第一次從零執行不要用 `--skip-openwrt`。此選項不會建立缺少的工具鏈；缺少必要產物會停止。
 
+### 3.1 在目前 Windows PC 開啟建置環境
+
+在 **PowerShell** 執行（這是目前 PC 已建立的 WSL 名稱與目錄）：
+
+```powershell
+wsl -d MYIR-Clean -u myir --cd /home/myir/work/mys-8mmx-v2-openwrt
+```
+
+進入 **Ubuntu** 後先檢查：
+
+```bash
+pwd
+id -u
+docker info
+ls tools/build-sd.sh bootloader/sources.json
+```
+
+`id -u` 應為 `1000`，Docker 應可連線。其他 PC 請使用自己建立的 WSL 名稱及 clone 目錄。若找不到腳本，先確認取得的是包含開機元件流程的專案版本；目前本機修改尚未 push，單靠 GitHub 舊版本無法執行此流程。
+
+第一次建置使用第 3 章完整命令；已完成 OpenWrt 的這台 MYIR-Clean 可使用 `--skip-openwrt`。它仍會準備並編譯開機元件、重新封裝 SD 和執行檢查，不會只複製舊開機檔。
+
+### 3.2 只建置 SPL／U-Boot／TF-A（進階操作）
+
+一般新手直接使用第 3 章整合入口即可。以下用於除錯或只更新開機元件，**前提是本專案的 `.work/openwrt` 已成功編譯，交叉工具鏈存在**。全部在 Ubuntu 專案根目錄執行：
+
+```bash
+# 建立包含建置及檢查工具的容器映像。
+docker build -t myir/openwrt-build:noble -f tools/Dockerfile .
+
+# 閱讀並同意 NXP 條款後，下載固定來源、校驗韌體並套用板級 patch。
+python3 tools/prepare-bootloader.py --accept-nxp-eula
+
+mkdir -p output/bootloader
+set -o pipefail
+docker run --rm \
+  -v "$PWD/.work/bootloader:/port" \
+  -v "$PWD/.work/openwrt/staging_dir:/staging:ro" \
+  -v "$PWD/tools:/setup:ro" \
+  -v "$PWD/bootloader:/boot-config:ro" \
+  -v "$PWD/output/bootloader:/output" \
+  myir/openwrt-build:noble bash /setup/build-bootloader.sh \
+  2>&1 | tee output/bootloader-build.log
+```
+
+腳本使用 `mys8mmx_v2_ddr4_defconfig` 建置 SPL／U-Boot，TF-A 使用 `PLAT=imx8mm` 建置 BL31，再由 imx-mkimage 的 `flash_ddr4_evk` 目標整合原廠 DDR4 timing、訓練韌體與開機元件。必要的 Hush／boot.scr 設定由腳本檢查，不需手動編輯 defconfig。
+
+開機檔是 `output/bootloader/imx-boot-mys8mmx-v2-2025.04-poc1a.bin`。`u-boot.bin` 或 `u-boot-spl.bin` 只是其中的元件，不能取代完整 imx-boot 檔直接當作 SD 韌體燒錄。只建置開機檔也不會更新已插在板子上的 SD 卡。
+
+如需完整可燒錄映像，回到整合入口執行：
+
+```bash
+bash tools/build-sd.sh --accept-nxp-eula --skip-openwrt
+```
+
+此命令會再次執行開機元件建置（可重用本次產物），並完成封裝及離線驗證。
+
 ## 4. 產物與成功標準
 
 | 位置 | 內容 |
@@ -85,7 +141,7 @@ SD 檔名：`openwrt-25.12.6-mys-8mmx-v2-sd-nvme-poc8.img.gz`。
 
 板級修改保存在 `bootloader/uboot-myir.patch`，包含原廠 GPL DDR timing，原始著作權／授權標示保留。timing SHA256：`d93343afc0b74b553ba4b3f210c40a945edc43ea75dac8ebca0864e8712ab8cd`。不重新產生 timing，也沒有取消每次冷開機的訓練。
 
-建置時間固定為原 POC1a 的 SOURCE_DATE_EPOCH；不同工具鏈產生的版本字串等仍可能讓檔案 SHA256 與舊預編譯檔不同。因此新流程使用固定來源＋檢查報告＋實際輸出雜湊，不要求輸出一定等於舊檔。
+建置時間固定為原 POC1a 的 `SOURCE_DATE_EPOCH=1793875200`，因此剛重建的 SPL／U-Boot 與 BL31 仍會顯示 **Nov 05 2026 10:40:00 UTC**；這不是實際執行 make 的時間。實際執行時間請看 `output/logs` 的當次日誌，確認檔案身分請使用 SHA256。不同工具鏈產生的版本字串等仍可能讓檔案 SHA256 與舊預編譯檔不同。因此新流程使用固定來源＋檢查報告＋實際輸出雜湊，不要求輸出一定等於舊檔。
 
 ## 6. 失敗與重試
 
@@ -115,11 +171,47 @@ MYIR_TEST_BOOTLOADER_DIR="$PWD/output/bootloader" \
 - 本次開機工作目錄及 DDR 下載快取原先不存在；已重新下載三個 Git 專案與 NXP 官方套件，沒有取用 MYIR-Dev 的開機二進位檔／來源快取。
 - 新 SPL／U-Boot／TF-A／imx-mkimage 編譯、DDR 與封裝結構檢查通過。
 - 整合入口的略過 OpenWrt 模式、預設完整模式與最終 SD 靜態檢查皆已執行通過。預設模式中的 OpenWrt 部分重用本次 MYIR-Clean 自行建立的快取；並未為這次整合再次安裝整個 WSL。
-- 新開機檔 SHA256 與舊 POC1a 不同；**新映像已確認開機至 OpenWrt shell，周邊與穩定性仍待確認**。先前已測試的映像會保留。
+- 新開機檔 SHA256 與舊 POC1a 不同；**新映像已確認開機至 OpenWrt shell，PCIe Gen2 x1 與 NVMe 唯讀測試通過；其他周邊與穩定性仍待確認**。先前已測試的映像會保留。
 
 ## 9. 實板操作
 
 先備份設定，使用另一張 SD 卡，核對新映像 SHA256，啟用燒錄工具的寫入後驗證。板子斷電後換卡，上電保留完整串口文字，確認 SPL DDR calibration、U-Boot 2025.04、2 GiB DRAM、boot.scr 與 Linux 正常啟動，再測 DHCP／USB／SSD。不要先寫 eMMC、NOR 或 fuse。
 ## 10. 新開機鏈實板結果
 
-2026-11-14 使用者確認新 boot SHA256 為 53ad61e8 開頭，並提供完整後續核心紀錄：DDR 校準完成、2 GiB、SD 讀取、EXT4 root 掛載及 OpenWrt shell 通過。早先 boot.scr 後的一次重啟原因仍待確認，不標記重啟穩定性通過。本次 PCIe 未連線，需先確認是否安裝 SSD；DHCP、USB／SSD I/O 與 Wi-Fi 尚未回報此新映像測試結果。開機顯示 root 尚未設密碼，請先在串口執行 `passwd`。
+2026-11-14 使用者確認本次開機檔完整 SHA256：
+
+```text
+53ad61e8ab66ec0740a8126f2fe466697a9d27a7c61d4522e3b2bf5539e5a1c0
+```
+
+此雜湊用於識別本次已測產物；其他工具鏈／建置環境的輸出不保證相同，仍需依當次建置證明與檢查結果確認。
+
+| 項目 | 本次新開機鏈的實板結果 |
+|---|---|
+| SPL／DDR | DDR4 2400 MT/s 校準完成，2 GiB 辨識成功 |
+| TF-A／U-Boot／SD | 載入 boot.scr、Image、DTB，啟動 Linux 6.12.113 |
+| 根檔案系統 | EXT4 掛載成功，進入 OpenWrt 25.12.6 shell |
+| PCIe／NVMe | 插入 SSD 後 Gen2 x1（5.0 GT/s）連線，辨識 nvme0n1 與 p1／p2 |
+| SSD 唯讀 | FAT 掛載、kernel8.img 全檔 SHA256、卸載通過；與先前測試相同 |
+| Ethernet | 100Mbps 全雙工，br-lan 顯示 192.168.50.70/24；未附 DHCP 租約交換記錄 |
+| USB／Wi-Fi／RTC | 尚未完成此新映像的功能重測；RTC 顯示時間無效 |
+| 重啟／壓力 | 早先一次重啟是否手動操作仍待釐清，尚未完成本次穩定性測試 |
+
+SSD 唯讀測試在 **板子串口／SSH shell** 執行；先確認裝置與分割區正確。本次 SSD 為 TS256GMTE400S，p1 是保留的 FAT 分割區：
+
+```sh
+mkdir -p /mnt/nvme
+mount -t vfat -o ro /dev/nvme0n1p1 /mnt/nvme
+sha256sum /mnt/nvme/kernel8.img
+umount /mnt/nvme
+```
+
+本次檔案結果：
+
+```text
+55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca
+```
+
+這是該 SSD 上既有檔案的測試值，不是要求其他 SSD 也具備此檔案；它證明本次讀取結果與先前一致，沒有驗證寫入、效能或耐久性。未插 SSD 時 PCIe 不建立連線，不能單憑此訊息判定移植失敗。
+
+新映像初始 root 密碼尚未設定，請先在可信任的串口執行 `passwd`。完整機器可讀紀錄見 [本次驗證紀錄](../validation/bootloader-from-source-20261114.json)。
