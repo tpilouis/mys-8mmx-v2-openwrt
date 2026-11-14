@@ -27,3 +27,7 @@ Supersedes the pending negotiation/read status above. User board DIAG reports `P
 User mounted `/dev/nvme0n1p1` with `-t vfat -o ro`, read the complete `kernel8.img` with sha256sum and unmounted successfully. SHA256: `55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca`, identical to the prior Gen1 test on the same SSD/file. This is cross-speed read consistency, not an independent comparison to an original distribution image.
 
 PASS: Gen2 x1 negotiation, NVMe/partition detection, FAT32 read-only mount, complete file read and unmount. No SSD formatting/write performed in this test. Write, measured throughput, repeated cold boots and long-term stability remain untested.
+
+## Clean-build SD boot — 2026-11-14
+
+User reports SD flashing and successful board boot for the MYIR-Clean rebuilt POC8 image (SHA256 b9f8525e4f4e2d4d1f853d4fccf5e82a055fd0f7227cccadbecab87a45c88e6b). Fresh source/toolchain build needed the documented feeds configuration reseed fix and used the separately supplied POC1a boot blob. Peripheral/network regression and endurance results were not supplied for this new image.

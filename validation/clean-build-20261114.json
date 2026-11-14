@@ -40,7 +40,7 @@
   },
   "credentials": "Exported overlay excludes deployed root password/hash; set a root password before network use",
   "services_emulation": "not run for this new image; legacy private-fixture harness is not portable",
-  "hardware_test": false,
+  "hardware_test": true,
   "github_pushed": false,
   "comparison_to_previous_poc8": {
     "Image": {
@@ -56,5 +56,13 @@
       "previous_sha256": "ccf0d7b2223917fe73579804b1091a40fe12e9a222b26a58817dc7a90899a1a0",
       "equal": true
     }
+  },
+  "hardware_validation": {
+    "date": "2026-11-14",
+    "method": "User-reported SD flashing and board boot test",
+    "sd_boot": "passed",
+    "network_ssh_luci": "not reported for this clean image",
+    "wifi_usb_rtc_nvme": "not reported for this clean image",
+    "endurance": "not tested"
   }
 }

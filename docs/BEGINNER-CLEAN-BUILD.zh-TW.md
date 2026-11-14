@@ -4,7 +4,7 @@
 
 這份手冊的目標是：新建獨立 Ubuntu → 從 GitHub 取得專案 → 下載原始碼 → 編譯 OpenWrt → 使用另行提供的開機檔封裝 SD 映像。編譯程式並不會自動燒錄任何磁碟。
 
-> 已完成本次環境安裝、來源下載、完整 make、SD 封裝與離線檢查。首次建置發現並修正一項設定順序問題。新映像尚未在板上測試；本手冊及修正目前保存在本機，尚未推送 GitHub。
+> 已完成本次環境安裝、來源下載、完整 make、SD 封裝與離線檢查。首次建置發現並修正一項設定順序問題。使用者已回報新映像燒錄 SD 後開機 PASS；本手冊及修正目前保存在本機，尚未推送 GitHub。
 
 ## 1. 先認識三個位置
 
@@ -349,7 +349,7 @@ docker run --rm \
 | 全新 Docker 編譯映像 | 已完成，從 Docker Hub 與套件站全新建立 |
 | 完整 make | 通過：修正 LuCI 設定順序後，從全新來源建立主機工具、GCC 14.3.0、核心與套件，容器退出碼 0 |
 | 完整 SD 封裝／離線驗證 | 通過：EXT4／FAT、分割區回讀、913 個一般檔案與 tar 比對、gzip、SHA256 |
-| 本次新映像實板測試 | 尚未進行 |
+| 本次新映像實板測試 | 2026-11-14 使用者回報：燒錄 SD 後開機 PASS；其他功能未回報重測 |
 
 本次記錄位置：`D:\MYIR-Clean\logs`。產物已另複製至 `D:\MYIR-Clean\output`，其中 `clean-build-report.json` 記錄來源、修正、校驗與外部開機檔。密碼／Token 不應出現在日誌、Git 或截圖。
 
@@ -390,3 +390,6 @@ docker run --rm \
 - [Docker Engine Ubuntu 安裝](https://docs.docker.com/engine/install/ubuntu/)
 - [WSL Git 與 Git Credential Manager](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-git)
 - [本專案 README](../README.md)
+### 2026-11-14 實板開機結果
+
+使用者將本次乾淨建置的映像燒錄至 SD 卡，回報開機測試 PASS。至此已完成「新環境下載來源＋本次設定順序修正＋完整 make＋外部 POC1a 開機檔封裝＋SD 實板開機」流程。這不代表 NXP 開機鏈已從頭重建，也不代表本次映像的網路、SSH／LuCI、Wi-Fi、USB、RTC、NVMe 與長時間穩定性已全部重測。
