@@ -61,3 +61,7 @@ User screenshots confirm Wireless and Interfaces pages render. Wireless lists ra
 ### Rebuilt boot chain: USB-A read-only test
 
 User output confirms USB storage on usb 2-1.1 behind the onboard hub, 32GB media with FAT32 bootfs at sdb1, read-only mount/list, full kernel8.img read (SHA256 49435997b1f076913dfe911ed5f8b27649876967c138969419abc6550790cdc6, read_exit=0) and unmount (exit=0). USB-A read test PASS. This is a different file version from the earlier NVMe test; no independent reference checksum comparison is claimed. Type-C and write/performance/endurance tests remain pending for this exact image.
+
+### Rebuilt boot chain: Type-C Host read-only test
+
+User output confirms the same 32GB media on usb 1-1 via Type-C OTG adapter, sdb1 FAT32 read-only mount, complete kernel8.img SHA256 49435997b1f076913dfe911ed5f8b27649876967c138969419abc6550790cdc6, read_exit=0 and unmount_exit=0. Type-C fixed Host read test PASS; checksum matches the USB-A read of the same file. Both USB-A and Type-C read regression tests are now complete for this image. Writes, measured throughput, endurance and USB device/gadget mode remain untested.

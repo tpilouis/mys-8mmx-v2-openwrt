@@ -38,7 +38,7 @@
     "sd_ext4_root_mount": "passed; no ext4 corruption shown",
     "ethernet": "PASS: 100Mbps full-duplex link in serial log; user LuCI Interfaces screenshot confirms lan DHCP client, carrier present, IPv4 192.168.50.138/24 and traffic counters.",
     "pcie_nvme": "PASS: PCIe Gen2 x1 (5.0 GT/s), nvme0n1 p1/p2 enumerated; user mounted p1 read-only, hashed kernel8.img and unmounted successfully. SHA256 55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca matches previous Gen1/Gen2 read tests. Writes, throughput and endurance untested.",
-    "usb": "USB-A PASS: device enumerated on usb 2-1.1 behind board hub, 32GB media sdb1 FAT32 bootfs mounted read-only; directory listing and complete kernel8.img SHA256 succeeded, read_exit=0, unmount_exit=0. SHA256 49435997b1f076913dfe911ed5f8b27649876967c138969419abc6550790cdc6; no independent reference checksum available. Type-C, write, throughput and endurance tests pending for this image.",
+    "usb": "PASS: USB-A (usb 2-1.1 via onboard hub) and Type-C fixed Host via OTG adapter (usb 1-1) each enumerated the same 32GB media, mounted sdb1 FAT32 read-only and completely read kernel8.img. Both produced SHA256 49435997b1f076913dfe911ed5f8b27649876967c138969419abc6550790cdc6, read_exit=0 and unmount_exit=0. Cross-port checksum agreement verified; independent reference, writes, throughput and endurance untested.",
     "wifi": "generic firmware loaded; AP/client not tested",
     "rtc": "invalid time reported",
     "earlier_restart": "unresolved: user has not confirmed manual power cycle versus automatic reset",
