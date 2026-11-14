@@ -45,3 +45,7 @@ Limits: an earlier restart after boot.scr is still unexplained (manual power cyc
 ### Rebuilt boot chain: subsequent hardware validation (2026-11-14)
 
 After inserting the SSD, the user supplied a successful Gen2 x1 (5.0 GT/s) boot with nvme0n1 p1/p2 enumeration. Read-only FAT mount, complete kernel8.img checksum and unmount passed; SHA256 55ea30cbb9fba29fd9fe8438a5324c715904116450c6f7169219c4d2b92d9dca matches previous reads. The user then reported 10/10 cold boots and 10/10 reboots passing for this new image. This supersedes the pending repeated-boot and SSD checks above; the cause of the earlier individual restart remains unknown. Long-duration stress, memory and other peripheral regression tests are not established by this report.
+
+### Rebuilt boot chain: SSH login
+
+The user set a root password and successfully logged in from Windows PowerShell using SSH password authentication to the current board address 192.168.50.138, reaching the OpenWrt root shell. SSH login PASS; no password/hash retained. This does not establish LuCI login or other remaining peripheral tests.

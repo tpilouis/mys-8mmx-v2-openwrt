@@ -43,7 +43,7 @@
     "rtc": "invalid time reported",
     "earlier_restart": "unresolved: user has not confirmed manual power cycle versus automatic reset",
     "stability_and_stress": "Cold boot 10/10 and reboot 10/10 PASS, user reported. Long-duration stress and memory tests not performed for this exact image.",
-    "root_password": "unset in supplied log; configure passwd before network use",
+    "root_password": "User set root password successfully; no password or hash recorded.",
     "repeated_boot_tests": {
       "method": "User reported tests of the new image",
       "cold_boot": {
@@ -54,6 +54,7 @@
         "attempts": 10,
         "passed": 10
       }
-    }
+    },
+    "ssh": "PASS: user supplied Windows PowerShell OpenSSH password login transcript to 192.168.50.138 reaching OpenWrt 25.12.6 r0-71dbef3 root shell."
   }
 }
