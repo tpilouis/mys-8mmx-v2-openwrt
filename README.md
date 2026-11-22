@@ -1,6 +1,6 @@
 # MYIR MYS-8MMX-V2 OpenWrt
 
-Private board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB V10, i.MX8MM Quad / 2 GiB DDR4. This repository is a pinned OpenWrt port kit, not a fork containing the full upstream history. It preserves the local POC6 baseline and subsequent POC7/POC8 changes in separate commits/tags.
+Open-source board bring-up project maintained by Louis Chou. Board: MYS-8MMX-V2, PCB V10, i.MX8MM Quad / 2 GiB DDR4. This repository is a pinned OpenWrt port kit, not a fork containing the full upstream history. It preserves the local POC6 baseline and subsequent POC7/POC8 changes in separate commits/tags.
 
 ## Current snapshot: POC8 PCIe Gen2 x1 read-validated
 
@@ -69,3 +69,7 @@ Some original diagnostic/unit/emulation scripts in `tools/` retain local `/home/
 ## Provenance and licensing
 
 OpenWrt sources remain at https://github.com/openwrt/openwrt . Vendor board references are MYiR-Dev/myir-imx-linux commit `d1275dfcc8d52e51b720d42d95ee54853449970b` and the firmware commit recorded in the overlay JSON. Existing upstream/vendor notices and per-file licenses apply; this project does not grant a new license to vendor PDFs, firmware, DDR blobs or other third-party material. No board manuals or schematic PDFs are redistributed here.
+
+## License and security
+
+Original project material is GPL-2.0-only unless an existing per-file license states otherwise. See [LICENSE](LICENSE), [third-party and binary notices](NOTICE.md) and [security policy](SECURITY.md). Proprietary DDR/Wi-Fi firmware and SD images are not distributed in Git. The included project-built MDIO diagnostic has corresponding C source and rebuild instructions in NOTICE.md.

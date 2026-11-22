@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-22",
+  "scope": "Public source repository preparation; no firmware release",
+  "history_scan": {
+    "reachable_objects": 285,
+    "unique_blobs": 152,
+    "secret_pattern_findings": 0,
+    "vendor_firmware_or_image_findings": 0,
+    "coverage": "All locally reachable branch/tag history fetched from origin; pattern scanning is not an exhaustive security guarantee"
+  },
+  "diagnostic_binary_exception": {
+    "path": "overlay/usr/sbin/myir-mdio-read",
+    "sha256": "7dfc8c689be5ddedb045e4ca78d5bad2ede24cc0325e477abc38c4892ccb55fe",
+    "source": "tools/myir-mdio-read.c",
+    "origin": "Existing local project diagnostic source at D:/MYIR-Dev/openwrt/setup/myir-mdio-read.c; source body retained",
+    "license": "GPL-2.0-only",
+    "compile_check": "Passed AArch64 GCC 14.3.0 -O2 -g -Wall -Wextra -Werror in MYIR-Clean; historical executable unchanged; bit-identical rebuild not claimed"
+  },
+  "remote_exposure_review": {
+    "releases": 0,
+    "actions_artifacts": 0,
+    "actions_runs": 0,
+    "webhooks": 0
+  },
+  "changes": [
+    "Added default GPL-2.0-only license with existing per-file and third-party exceptions",
+    "Added NOTICE with proprietary firmware exclusions and diagnostic source/rebuild steps",
+    "Added SECURITY policy and root-password/secure-boot limitations",
+    "Updated README and anonymous-clone instructions"
+  ],
+  "hardware": "No new firmware built or flashed; existing hardware results retain their exact scope"
+}

@@ -4,7 +4,7 @@
 
 這份手冊的目標是：新建獨立 Ubuntu → 從 GitHub 取得專案 → 下載原始碼與經同意授權的韌體 → 編譯 OpenWrt／開機元件 → 封裝 SD 映像。編譯程式並不會自動燒錄任何磁碟。
 
-> 已完成本次環境安裝、來源下載、完整 make、SD 封裝與離線檢查。首次建置發現並修正一項設定順序問題。使用者已回報新映像燒錄 SD 後開機 PASS；本手冊及修正目前保存在本機，尚未推送 GitHub。
+> 已完成本次環境安裝、來源下載、完整 make、SD 封裝與離線檢查。首次建置發現並修正一項設定順序問題。使用者已回報新映像燒錄 SD 後開機 PASS；本手冊及修正已納入 GitHub 專案。
 
 ## 1. 先認識三個位置
 
@@ -32,7 +32,7 @@ Windows 的 D: 是 NTFS，但真正的建置工作在 WSL 虛擬磁碟內的 **L
 - 建議 16 GB 以上記憶體，32 GB 較充裕；D: 建議至少 100 GB 可用空間。
 - 穩定網路，可連 GitHub、Ubuntu、Docker、OpenWrt 來源站。
 - 第一次下載與工具鏈編譯可能花數小時；中途不要休眠、關機或強制終止 WSL。
-- 目前 repo 為 Private，需有存取權。瀏覽器已登入，不一定表示 Ubuntu 的 Git 已有認證。
+- 公開倉庫可使用 HTTPS 匿名 clone，不需要 GitHub 帳號、Token 或 SSH key；向倉庫推送修改仍需寫入權限。
 - 新環境不需要先安裝 Yocto、NXP SDK 或 ARM 交叉工具鏈。OpenWrt 會在建置中建立它需要的工具鏈。
 
 既有 `MYIR-Dev` 與板上已驗證映像請保留。本流程不使用它的原始碼、Docker 映像、工具鏈或 `dl` 下載快取。
@@ -172,9 +172,9 @@ git status --short
 
 `git pull` 只更新這個移植專案，不會自動將新補丁／overlay／設定同步到已存在的 `.work/openwrt`。若要驗證新版本，應準備新的工作目錄並調整掛載路徑。更新前先 `git status --short`，保留自己的修改，不要用強制 reset 清除它們。
 
-### Private repo 認證
+### 公開倉庫與 Git 認證
 
-若遇到 `Repository not found` 或認證失敗，先確認帳號有權限；GitHub HTTPS 不接受帳號密碼作 Git 認證。可使用你已設定的 SSH key 或 Git Credential Manager，不要將 Token 放入 URL、操作紀錄或手冊。
+公開倉庫的 HTTPS clone 不需認證。若出現 `Repository not found`，先核對網址與網路／代理設定。只有推送修改或存取其他私人倉庫時才需要 SSH key 或 Git Credential Manager；不要將 Token 放入 URL、操作紀錄或手冊。
 
 本機已安裝 Git for Windows，且其 Git Credential Manager 已登入；本次只借用該認證，沒有複製舊專案或快取。若你的 PC 也符合這個條件，可在 Ubuntu 設定：
 
